@@ -1,0 +1,171 @@
+/*
+    Custom styles
+
+	Copyright (c) 2023 Xsam Technologies and/or its affiliates. All rights reserved.
+    Author : Xanders Samoth | https://www.linkedin.com/in/xanders-samoth-b2770737/
+*/
+/********** Import online CSS **********/
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i");
+
+/********** Typographie **********/
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+pre {
+    font-family: inherit!important;
+    font-size: inherit!important;
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+/********** jQuery Ellipsis **********/
+.ellip {
+    display: block;
+    height: 100%;
+    transition: .3s;
+}
+
+.ellip-line {
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    max-width: 100%;
+}
+
+.ellip,
+.ellip-line {
+    position: relative;
+    overflow: hidden;
+}
+
+/********** Counter **********/
+.counter-box {
+    display: block;
+    background: #f6f6f6;
+    padding: 40px 20px 37px;
+    text-align: center
+}
+
+.counter-box p {
+    margin: 5px 0 0;
+    padding: 0;
+    color: #909090;
+    font-size: 18px;
+    font-weight: 500
+}
+
+.counter-box i {
+    font-size: 60px;
+    margin: 0 0 15px;
+    color: #d2d2d2
+}
+
+.counter {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: #666;
+    line-height: 28px
+}
+
+.counter-box.colored {
+    background: #3acf87;
+}
+
+.counter-box.colored p,
+.counter-box.colored i,
+.counter-box.colored .counter {
+    color: #fff
+}
+
+/********** Custom colors **********/
+/* background */
+.bg-blue {
+    background-color: #006afb !important;
+}
+
+.bg-yellow {
+    background-color: #ffb400 !important;
+}
+
+/* button */
+.btn-blue {
+    background-color: #006afb !important;
+    color: #fff !important;
+    border-color: #006afb !important;
+}
+
+.btn-blue:hover {
+    background-color: #006afb !important;
+    color: #fff !important;
+    border-color: #006afb !important;
+}
+
+.btn-outline-blue {
+    color: #006afb !important;
+    border-color: #006afb !important;
+}
+
+.btn-outline-blue:hover {
+    background-color: #006afb !important;
+    color: #fff !important;
+    border-color: #006afb !important;
+}
+
+.btn-yellow {
+    background-color: #ffb400 !important;
+    color: #333 !important;
+    border-color: #ffb400 !important;
+}
+
+.btn-yellow:hover {
+    background-color: #ffb400 !important;
+    color: #333 !important;
+    border-color: #ffb400 !important;
+}
+
+.btn-outline-yellow {
+    color: #ffb400 !important;
+    border-color: #ffb400 !important;
+}
+
+.btn-outline-yellow:hover {
+    background-color: #ffb400 !important;
+    color: #fff !important;
+    border-color: #ffb400 !important;
+}
+
+/* border */
+.border-blue {
+    border-color: #006afb !important;
+}
+
+.border-yellow {
+    border-color: #ffb400 !important;
+}
+
+/* text */
+.text-blue {
+    color: #006afb !important;
+}
+
+.text-yellow {
+    color: #ffb400 !important;
+}
+
+@media (min-width: 992px) {
+
+}
+
+@media (min-width: 768px) {
+
+}
+
+@media screen and (max-width: 480px) {
+
+}
