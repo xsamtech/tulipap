@@ -11,9 +11,10 @@ return [
     |--------------------------------------------------------------------------
     |
     */
-    // ===== OTHER
+    'app_description' => 'Tulipap est une plateforme qui facilite le paiement des factures de courant électrique et l\'achat des cartes prépayées virtuelles.',
+    'keywords' => 'Tulipap,électricité,facture,prépayée,carte,paiement',
     'all_right_reserved' => 'Tous droits réservés',
-    'invert_theme' => 'Inverser le thème',
+    'dark_theme' => 'Activer thème sombre',
     'your_language' => 'Votre langue',
     'back_home' => 'Retourner à la page d\'accueil',
     'back_list' => 'Retourner à la liste',
@@ -163,14 +164,22 @@ return [
     'year_plural' => 'années',
 
     // ===== LOGIN PAGE
-    'login_title' => 'Identifiez-vous',
-    'login_username' => 'N° de téléphone, nom d\'utilisateur ou E-mail',
+    'login_title1' => 'Se connecter',
+    'login_title2' => 'Identifiez-vous',
+    'login_description' => 'Vos données sont sécurisées avec nous. Alors vous devez vous identifier pour être sûr que c\'est bien vous.',
+    'login_username' => 'N° de téléphone ou E-mail',
     'remember_me' => 'Se souvenir de moi',
     'forgotten_password' => 'Mot de passe oublié ?',
+    'not_member' => 'Pas encore membre ?',
+    'signup_with' => 'ou s\'inscrire avec :',
     'go_register' => 'Je n\'ai pas de compte',
 
     // ===== REGISTER PAGE
-    'register_title' => 'Incrivez-vous pour commencer',
+    'register_title1' => 'S\'inscrire',
+    'register_title2' => 'Inscrivez-vous pour commencer',
+    'register_superadmin_description' => 'Enregistrez les données permettant à Tulipap et à ses services de fonctionner.',
+    'register_company_description' => 'Inscrivez-vous en tant qu\'administrateur puis enregistrez votre société fournisseur d\'électricité que vous allez gérer.',
+    'register_customer_description' => 'Après inscription, si vous voulez recevoir régulièrement vos factures d\'électricité, vous devrez donner votre code et le nom complet par lequel votre fournisseur vous reconnait. Sinon, vous pouvez déjà commencer à acheter vos cartes prépayées virtuelles.',
     'firstname' => 'Prénom',
     'lastname' => 'Post-nom',
     'surname' => 'Nom',
@@ -197,5 +206,339 @@ return [
     'go_login' => 'J\'ai déjà un compte',
     'api_token' => 'Votre clé pour utiliser les APIs',
 
-    // ===== CONTENT AFTER LOGIN
+    // ===== NAVIGATION MENU
+    'menu' => [
+        'home' => 'Accueil',
+        'account_settings' => 'Paramètres du compte',
+        'messages' => 'Messages',
+        'notifications' => 'Notifications',
+        'superadmin' => [
+            'about' => [
+                'title' => 'A propos',
+                'description' => 'Informations about the company and its services for the public.',
+            ],
+        ],
+        'admin' => [
+            'about' => 'A propos',
+            'help' => 'Centre d\'aide',
+        ],
+        'agent' => [
+            'about' => 'A propos',
+            'help' => 'Centre d\'aide',
+        ],
+        'customer' => [
+            'about' => 'A propos',
+            'help' => 'Centre d\'aide',
+            'login' => 'Se connecter',
+            'cart' => 'Mes commandes',
+            'invoice' => 'Mes factures',
+        ],
+    ],
+
+    // ===== SUPER ADMIN PAGES
+    'super_admin' => [
+        // ===== ABOUTS PAGE
+        'about_subject' => [
+            'title' => 'Sujets d\à propos',
+            'details' => 'Détails sur le sujet d\à propos',
+            'link' => 'Gérer les sujets d\à propos',
+            'add' => 'Ajouter un sujet d\à propos',
+            'edit' => 'Editer le sujet d\à propos',
+            'search' => 'Rechercher un sujet d\à propos',
+            'list' => 'Liste de sujets d\à propos',
+            'datas' => [
+                'subject' => 'Suject',
+                'description' => 'Description',
+                'status' => 'Etat',
+                'activated_status' => 'Activaté',
+                'deactivated_status' => 'Désactivaté',
+                'font_icon' => 'Nom de l\'icône',
+                'font_icon_color' => 'Couleur de l\'icône',
+                'icon' => 'Icône',
+                'icons' => 'Icônes',
+                'add_font_icon' => 'Ajouter des icônes',
+                'new_font_icon' => 'Nouvelle icône',
+                'update_font_icon' => 'Mettre à jour l\'icône'
+            ],
+            'other_datas' => 'Autres données',
+            // Title
+            'about_title' => [
+                'title' => 'Titre d\à propos',
+                'details' => 'Détails sur le titre d\à propos',
+                'link' => 'Gérer les titres d\à propos',
+                'add' => 'Ajouter un titre d\à propos',
+                'edit' => 'Editer le titre d\à propos',
+                'search' => 'Rechercher un titre d\à propos',
+                'list' => 'Liste de titres d\à propos',
+            ],
+            // Content
+            'about_content' => [
+                'title' => 'Contenu d\à propos',
+                'details' => 'Détails sur le contenu d\à propos',
+                'link' => 'Gérer les contenus d\à propos',
+                'add' => 'Ajouter un contenu d\à propos',
+                'edit' => 'Editer le contenu d\à propos',
+                'search' => 'Rechercher un contenu d\à propos',
+                'list' => 'Liste de contenus d\à propos',
+            ]
+        ],
+
+        // ===== CONTINENTS PAGE
+        'continent' => [
+            'title' => 'Continent',
+            'details' => 'Détails sur le continent',
+            'link' => 'Gérer les continents',
+            'add' => 'Ajouter un continent',
+            'edit' => 'Editer le continent',
+            'search' => 'Rechercher un continent',
+            'list' => 'Liste de continents',
+            // Region
+            'region' => [
+                'title' => 'Région',
+                'details' => 'Détails sur la région',
+                'link' => 'Gérer les régions',
+                'add' => 'Ajouter une région',
+                'edit' => 'Editer la région',
+                'search' => 'Rechercher une région',
+                'list' => 'Liste de régions',
+            ],
+            // Country
+            'country' => [
+                'title' => 'Pays',
+                'details' => 'Détails sur le pays',
+                'link' => 'Gérer les pays',
+                'add' => 'Ajouter un pays',
+                'edit' => 'Editer le pays',
+                'search' => 'Rechercher un pays',
+                'list' => 'Liste de pays',
+            ],
+            // Province
+            'province' => [
+                'title' => 'Province',
+                'details' => 'Détails sur la province',
+                'link' => 'Gérer les provinces',
+                'add' => 'Ajouter une province',
+                'edit' => 'Editer la province',
+                'search' => 'Rechercher une province',
+                'list' => 'Liste de provinces',
+            ],
+            // City
+            'city' => [
+                'title' => 'Ville',
+                'details' => 'Détails sur la ville',
+                'link' => 'Gérer les villes',
+                'add' => 'Ajouter une ville',
+                'edit' => 'Editer la ville',
+                'search' => 'Rechercher une ville',
+                'list' => 'Liste de villes',
+            ],
+            // Area
+            'area' => [
+                'title' => 'Commune',
+                'details' => 'Détails sur la commune',
+                'link' => 'Gérer les communes',
+                'add' => 'Ajouter une commune',
+                'edit' => 'Editer la commune',
+                'search' => 'Rechercher une commune',
+                'list' => 'Liste de communes',
+            ],
+            // Neighborhood
+            'neighborhood' => [
+                'title' => 'Quartier',
+                'details' => 'Détails sur le quartier',
+                'link' => 'Gérer les quartiers',
+                'add' => 'Ajouter un quartier',
+                'edit' => 'Editer le quartier',
+                'search' => 'Rechercher un quartier',
+                'list' => 'Liste de quartiers',
+            ],
+        ],
+
+        // ===== MISCELLANEOUS PAGE
+        'miscellaneous' => [
+            'title' => 'Divers',
+            'link' => 'Gérer d\'autres données',
+            'search' => 'Rechercher parmi les autres données',
+            // Group
+            'group' => [
+                'title' => 'Groupe',
+                'details' => 'Détails sur le groupe',
+                'link' => 'Gérer les groupes',
+                'add' => 'Ajouter un groupe',
+                'edit' => 'Editer le groupe',
+                'search' => 'Rechercher un groupe',
+                'list' => 'Liste de groupes',
+            ],
+            // Status
+            'status' => [
+                'title' => 'Etat',
+                'details' => 'Détails sur l\'état',
+                'link' => 'Gérer les états',
+                'add' => 'Ajouter un état',
+                'edit' => 'Editer le état',
+                'search' => 'Rechercher un état',
+                'list' => 'Liste d\'états',
+            ],
+            // Type
+            'type' => [
+                'title' => 'Type',
+                'details' => 'Détails sur le type',
+                'link' => 'Gérer les types',
+                'add' => 'Ajouter un type',
+                'edit' => 'Editer le type',
+                'search' => 'Rechercher un type',
+                'list' => 'Liste de types',
+            ],
+            // Service
+            'service' => [
+                'title' => 'Service',
+                'details' => 'Détails sur le service',
+                'link' => 'Gérer les services',
+                'add' => 'Ajouter un service',
+                'edit' => 'Editer le service',
+                'search' => 'Rechercher un service',
+                'list' => 'Liste de services',
+            ],
+            // Role
+            'role' => [
+                'title' => 'Rôle',
+                'details' => 'Détails sur le rôle',
+                'link' => 'Gérer les rôles',
+                'add' => 'Ajouter un rôle',
+                'edit' => 'Editer le rôle',
+                'search' => 'Rechercher un rôle',
+                'list' => 'Liste de rôles',
+            ],
+            // Other super administrators
+            'other_super_admin' => [
+                'title' => 'Autres super administrateurs',
+            ],
+        ]
+    ],
+
+    // ===== ADMIN PAGES
+    'admin' => [
+        // ===== COMPANY PAGE
+        'company' => [
+            'title' => 'Profil de votre entreprise',
+            'datas' => [
+                'company_name' => 'Nom de l\'entreprise',
+                'company_acronym' => 'Acronyme de l\'entreprise',
+                'company_website' => 'Site web',
+                'add_phones' => 'Autres n° de téléphone',
+                'add_emails' => 'Autres e-mails',
+                'address' => 'Adresse du siège social',
+                'social_network' => [
+                    'network_name' => 'Nom du réseau social',
+                    'network_url' => 'URL de votre profil'
+                ],
+            ],
+            // Pricing
+            'pricing' => [
+                'number_of_kilowatt_hours' => 'Nombre de kilowattheures',
+                'price' => 'Prix',
+                'currency' => 'Monnaie',
+                'type' => 'Type de client',
+            ],
+            // Office
+            'office' => [
+                'title' => 'Ajouter un bureau',
+                'description' => 'Ajouter un bureau avec des agents pour gérer les clients du même quartier que ce bureau.',
+                'office_code' => 'Code du bureau',
+                'office_name' => 'Nom du bureau',
+                'agent' => [
+                    'agent_number' => 'Matricule de l\'agent',
+                ],
+                'office_address' => 'Adresse du bureau',
+            ],
+            // Invoice
+            'invoice' => [
+                'title' => 'Ajouter une facture',
+                'invoice_number' => 'Numéro de facture',
+                'invoiced_period' => 'Période facturée',
+                'tolerated_delay' => 'Retard toléré',
+                'used_quantity' => 'kWh utilisés',
+                'publishing_date' => 'Date de publication',
+            ],
+            // Prepaid card
+            'prepaid_card' => [
+                'title' => 'Carte prépayée',
+                'number_of_kilowatt_hours' => 'Nombre de kilowattheures',
+                'price' => 'Prix',
+            ],
+        ],
+    ],
+
+    // ===== AGENT PAGES
+    'agent' => [
+        'home' => [
+            'title' => 'Bienvenue chez Tulipap',
+        ],
+    ],
+     
+    // ===== CUSTOMER PAGES
+    'customer' => [
+        'footer' => [
+            'useful_links' => 'Liens utiles',
+            'social_network' => [
+                'title' => 'Sur les réseaux sociaux',
+                'content' => 'Restez en contact avec l\'équipe <strong class="text-uppercase"><span class="text-blue">Tuli</span><span class="text-yellow">pap</span></strong> et recevez les mises à jour récentes via les réseaux sociaux'
+            ],
+        ],
+        'home' => [
+            'title' => 'Bienvenue chez Tulipap',
+            'slide1' => [
+                'title' => 'Payer l\'électricité n\'a jamais été aussi facile',
+                'content' => 'Gérez vos factures d\'électricité ou achetez des cartes prépayées virtuelles pour recharger votre compteur.',
+                'comment' => 'Embarquez dans l\'aventure !',
+                'link1' => 'Mes factures',
+                'link2' => 'Achat de carte'
+            ],
+            'invoice_how_to' => [
+                'title' => 'Comment payer les factures ?',
+                'content1' => 'facilite et accélère le paiement de vos factures. Et donc, il vous suffit de suivre les trois (3) étapes suivantes :',
+                'step1' => 'Inscrivez-vous sur la plateforme ;',
+                'step2' => 'Choisissez votre fournisseur d\'électricité ;',
+                'step3' => 'Payez vos factures lorsque votre fournisseur vous les envoie.',
+                'content2' => 'Et vous avez la possibilité de payer via l\'un des services suivants :',
+                'link' => 'Commencer ici'
+            ],
+            'buying_card' => [
+                'title' => 'Acheter carte prépayée',
+                'content' => 'Si vous êtes client de courant prépayée, vous pouvez acheter vos cartes prépayées virtuelles pour recevoir le code de recharge de votre compteur.',
+                'comment' => 'Choisissez votre fournisseur pour commencer',
+                'see_cards' => 'Voir les cartes',
+                'see_all_providers' => 'Voir tous les fournisseurs'
+            ],
+            'partnership' => [
+                'title' => 'Partenariat et sponsoring',
+                'content' => 'En devenant partenaire de <strong>Xsam Technologies</strong> ou sponsor de <strong>Tulipap</strong>, vous aidez la plateforme à améliorer ses services. Et, de votre côté, vous gagnez selon vos exigences.',
+                'link1' => 'Devenir partenaire',
+                'link2' => 'Sponsoriser Tulipap'
+            ],
+            'provider' => [
+                'title' => 'Êtes-vous un fournisseur d\'électricité ?',
+                'content' => 'Tulipap met à votre disposition un espace où vous pourrez :',
+                'task1' => 'Enregistrez et gérez votre entreprise ;',
+                'task2' => 'Enregistrer et gérer les bureaux avec leurs agents ;',
+                'task3' => 'Enregistrer et gérer vos clients ;',
+                'task4' => 'Recevoir les demandes d\'abonnement des clients ;',
+                'task5' => 'Envoyez des factures à payer à vos clients ;',
+                'task6' => 'Publier des cartes prépayées que les clients peuvent acheter ;',
+                'link' => 'Commencer ici'
+            ],
+            'newsletter' => [
+                'title' => 'S\'inscrire à la newsletter',
+                'content' => 'Abonnez-vous à notre newsletter pour rester informé de nos nouvelles offres.',
+                'placeholder' => 'E-mail',
+                'subscribe' => 'S\'abonner',
+            ],
+        ],
+        'about_us' => [
+            'title' => 'A propos de nous',
+        ],
+        'help' => [
+            'title' => 'Centre d\'aide',
+        ],
+    ],
 ];

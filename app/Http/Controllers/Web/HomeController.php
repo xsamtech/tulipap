@@ -16,7 +16,7 @@ class HomeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['changeLanguage', 'apisDoc']);
+        $this->middleware('auth')->except(['changeLanguage', 'index', 'aboutUs', 'help']);
     }
 
     // ==================================== HTTP GET METHODS ====================================
@@ -35,70 +35,75 @@ class HomeController extends Controller
     }
 
     /**
-     * Display the test markdown view.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function apisDoc()
-    {
-        return view('docs.apis');
-    }
-
-    /**
      * GET: View dashboard
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
-        // Client used for accessing API | Use authorization key
-        $client = new Client();
-        $headers = [
-            'Authorization' => 'Bearer '. Auth::user()->api_token,
-            'Accept' => 'application/json',
-            'X-localization' => !empty(Session::get('locale')) ? Session::get('locale') : App::getLocale()
-        ];
-        // Select current user API URL
-        $url_user = 'https://biliap-admin.dev:1443/api/user/' . Auth::user()->id;
-        // Select all received messages API URL
-        $url_message = 'https://biliap-admin.dev:1443/api/message/inbox/' . Auth::user()->id;
+        if (!empty(Auth::user())) {
+            // Client used for accessing API | Use authorization key
+            $client = new Client();
+            $headers = [
+                'Authorization' => 'Bearer '. Auth::user()->api_token,
+                'Accept' => 'application/json',
+                'X-localization' => !empty(Session::get('locale')) ? Session::get('locale') : App::getLocale()
+            ];
+            // Select current user API URL
+            $url_user = 'https://biliap-admin.dev:1443/api/user/' . Auth::user()->id;
+            // Select all received messages API URL
+            $url_message = 'https://biliap-admin.dev:1443/api/message/inbox/' . Auth::user()->id;
 
-        try {
-            // Select current user API response
-            $response_user = $client->request('GET', $url_user, [
-                'headers' => $headers,
-                'verify'  => false
-            ]);
-            $user = json_decode($response_user->getBody(), false);
+            try {
+                // Select current user API response
+                $response_user = $client->request('GET', $url_user, [
+                    'headers' => $headers,
+                    'verify'  => false
+                ]);
+                $user = json_decode($response_user->getBody(), false);
 
-            // Select all received messages API response
-            $response_message = $client->request('GET', $url_message, [
-                'headers' => $headers,
-                'verify'  => false
-            ]);
-            $messages = json_decode($response_message->getBody(), false);
+                // Select all received messages API response
+                $response_message = $client->request('GET', $url_message, [
+                    'headers' => $headers,
+                    'verify'  => false
+                ]);
+                $messages = json_decode($response_message->getBody(), false);
 
-            return view('dashboard', [
-                'user' => $user,
-                'messages' => $messages,
-            ]);
+                return view('home', [
+                    'user' => $user,
+                    'messages' => $messages,
+                ]);
 
-        } catch (ClientException $e) {
-            // If Select all received API returns some error, get it,
-            // return to the message page and display its message
-            return view('dashboard', [
-                'response_error' => json_decode($e->getResponse()->getBody()->getContents(), false)
-            ]);
+            } catch (ClientException $e) {
+                // If Select all received API returns some error, get it,
+                // return to the message page and display its message
+                return view('home', [
+                    'response_error' => json_decode($e->getResponse()->getBody()->getContents(), false)
+                ]);
+            }
+
+        } else {
+            return view('welcome');
         }
     }
 
     /**
-     * Display the results of search.
+     * Display the About page.
      *
      * @return \Illuminate\View\View
      */
-    public function search()
+    public function aboutUs()
     {
-        return view('dashboard');
+        return view('about_us');
+    }
+
+    /**
+     * Display the Help page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function help()
+    {
+        return view('help');
     }
 }

@@ -99,7 +99,7 @@ class AboutController extends Controller
                                     'headers' => $headers,
                                     'form_params' => [
                                         'status_name' => 'Désactivé',
-                                        'status_description' => 'Invisibilité et impossibilité de fonctionner dans certains espaces des applications.',
+                                        'status_description' => 'Visibilité restreinte dans la plateforme ; et donc, impossibilité de faire des opérations.',
                                         'group_id' => $group->id,
                                     ],
                                     'verify'  => false

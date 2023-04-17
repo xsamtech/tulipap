@@ -12,7 +12,7 @@ class Preference extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['prefered_theme', 'prefered_language', 'login_verify', 'gps_location', 'email_confirmed', 'phone_confirmed', 'updated_at', 'user_id'];
+    protected $fillable = ['dark_theme', 'prefered_language', 'login_verify', 'gps_location', 'email_confirmed', 'phone_confirmed', 'updated_at', 'user_id'];
 
     /**
      * ONE-TO-ONE

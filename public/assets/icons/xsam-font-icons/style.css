@@ -11,6 +11,7 @@
 }
 
 .xs {
+  vertical-align: -3px;
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'xsam-font-icons' !important;
   speak: never;

@@ -217,7 +217,7 @@ return [
             'exists' => 'This company name already exists'
         ],
         'card_number' => [
-            'exists' => 'This bank card number already exists'
+            'exists' => 'This card number already exists'
         ],
         'network_url' => [
             'exists' => 'This URL already exists'
@@ -225,8 +225,14 @@ return [
         'code' => [
             'exists' => 'This code already exists'
         ],
+        'billing_method' => [
+            'exists' => 'This billing method already exists'
+        ],
         'album_name' => [
             'exists' => 'This album name already exists'
+        ],
+        'file' => [
+            'exists' => 'This file already exists in this album'
         ],
         'icon_name' => [
             'exists' => 'This icon name already exists'
@@ -241,7 +247,10 @@ return [
             'exists' => 'This coverage area name already exists'
         ],
         'invoice_number' => [
-            'required' => 'This invoice number already exists for the company'
+            'required' => 'This invoice number already exists'
+        ],
+        'invoiced_period' => [
+            'required' => 'The billed period for this year is already created for this customer'
         ],
     ],
 

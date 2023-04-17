@@ -6,7 +6,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Address;
-use App\Models\City;
+use App\Models\Area;
+use App\Models\Group;
+use App\Models\Neighborhood;
+use App\Models\Status;
 use Illuminate\Http\Request;
 use App\Http\Resources\Address as ResourcesAddress;
 
@@ -36,35 +39,37 @@ class AddressController extends BaseController
         $inputs = [
             'number' => $request->number,
             'street' => $request->street,
-            'neighborhood' => $request->neighborhood,
-            'area' => $request->area,
-            'reference' => $request->reference,
-            'city_id' => $request->city_id
+            'area_id' => $request->area_id,
+            'neighborhood_id' => $request->neighborhood_id,
+            'status_id' => $request->status_id,
+            'user_id' => $request->user_id,
+            'company_id' => $request->company_id,
+            'office_id' => $request->office_id
         ];
-        // Select all addresses of a same city to check unique constraint
-        $addresses = Address::where('city_id', $inputs['city_id'])->get();
+        // Select all addresses of a same neighborhood and a same area to check unique constraint
+        $addresses = Address::where([['neighborhood_id', $inputs['neighborhood_id']], ['area_id', $inputs['area_id']]])->get();
 
         // Validate required fields
-        if ($inputs['area'] == null OR $inputs['area'] == ' ') {
-            return $this->handleError($inputs['area'], __('validation.required'), 400);
+        if ($request->neighborhood_id == null OR $request->neighborhood_id == ' ') {
+            return $this->handleError($request->neighborhood_id, __('validation.required'), 400);
         }
 
-        if ($inputs['city_id'] == null OR $inputs['city_id'] == ' ') {
-            return $this->handleError($inputs['city_id'], __('validation.required'), 400);
+        if ($request->area_id == null OR $request->area_id == ' ') {
+            return $this->handleError($request->area_id, __('validation.required'), 400);
         }
 
-		// Find city by ID to get city name
-		$city = City::find($inputs['city_id']);
+        // Find area and neighborhood by their IDs to get their names
+        $area = Area::find($inputs['area_id']);
+        $neighborhood = Neighborhood::find($inputs['neighborhood_id']);
 
         // Check if address already exists
         foreach ($addresses as $another_address):
-            if ($another_address->number == $inputs['number'] AND $another_address->street == $inputs['street'] AND $another_address->neighborhood == $inputs['neighborhood'] AND $another_address->area == $inputs['area']) {
-                return $this->handleError(__('notifications.address.number') . __('notifications.colon_after_word') . ' ' . $inputs['number'] . ', ' 
-					. __('notifications.address.street') . __('notifications.colon_after_word') . ' ' . $inputs['street'] . ', ' 
-					. __('notifications.address.neighborhood') . __('notifications.colon_after_word') . ' ' . $inputs['neighborhood'] . ', ' 
-					. __('notifications.address.area') . __('notifications.colon_after_word') . ' ' . $inputs['area'] . ', ' 
-					. __('notifications.location.city.title') . __('notifications.colon_after_word') . ' ' . $city->city_name, 
-				__('validation.custom.address.exists'), 400);
+            if ($another_address->number == $inputs['number'] AND $another_address->street == $inputs['street'] AND $another_address->area_id == $inputs['area_id'] AND $another_address->neighborhood_id == $inputs['neighborhood_id']) {
+                return $this->handleError(
+                     __('notifications.address.number') . __('notifications.colon_after_word') . ' ' . $request->number . ', ' 
+                    . __('notifications.address.street') . __('notifications.colon_after_word') . ' ' . $request->street . ', ' 
+                    . __('notifications.address.neighborhood') . __('notifications.colon_after_word') . ' ' . $neighborhood->neighborhood_name . ', ' 
+                    . __('notifications.address.area') . __('notifications.colon_after_word') . ' ' . $area->area_name, __('validation.custom.address.exists'), 400);
             }
         endforeach;
 
@@ -104,38 +109,39 @@ class AddressController extends BaseController
             'id' => $request->id,
             'number' => $request->number,
             'street' => $request->street,
-            'neighborhood' => $request->neighborhood,
-            'area' => $request->area,
-            'reference' => $request->reference,
-            'city_id' => $request->city_id,
+            'area_id' => $request->area_id,
+            'neighborhood_id' => $request->neighborhood_id,
+            'status_id' => $request->status_id,
+            'user_id' => $request->user_id,
+            'company_id' => $request->company_id,
+            'office_id' => $request->office_id,
             'updated_at' => now()
         ];
-        // Select all addresses of a same city and current address to check unique constraint
-        $addresses = Address::where('city_id', $inputs['city_id'])->get();
+        // Select all addresses of a same neighborhood and a same area. And select current address to check unique constraint
+        $addresses = Address::where([['neighborhood_id', $inputs['neighborhood_id']], ['area_id', $inputs['area_id']]])->get();
         $current_address = Address::find($inputs['id']);
 
-        // Validate required fields
-        if ($inputs['area'] == null OR $inputs['area'] == ' ') {
-            return $this->handleError($inputs['area'], __('validation.required'), 400);
+        if ($request->neighborhood_id == null OR $request->neighborhood_id == ' ') {
+            return $this->handleError($request->neighborhood_id, __('validation.required'), 400);
         }
 
-        if ($inputs['city_id'] == null OR $inputs['city_id'] == ' ') {
-            return $this->handleError($inputs['city_id'], __('validation.required'), 400);
+        if ($request->area_id == null OR $request->area_id == ' ') {
+            return $this->handleError($request->area_id, __('validation.required'), 400);
         }
 
-		// Find city by ID to get city name
-		$city = City::find($inputs['city_id']);
+        // Find area and neighborhood by their IDs to get their names
+        $area = Area::find($inputs['area_id']);
+        $neighborhood = Neighborhood::find($inputs['neighborhood_id']);
 
         // Check if address already exists
         foreach ($addresses as $another_address):
-            if ($current_address->city_id != $inputs['city_id']) {
-                if ($another_address->number == $inputs['number'] AND $another_address->street == $inputs['street'] AND $another_address->neighborhood == $inputs['neighborhood'] AND $another_address->area == $inputs['area']) {
-                    return $this->handleError(__('notifications.address.number') . __('notifications.colon_after_word') . ' ' . $inputs['number'] . ', ' 
-						. __('notifications.address.street') . __('notifications.colon_after_word') . ' ' . $inputs['street'] . ', ' 
-						. __('notifications.address.neighborhood') . __('notifications.colon_after_word') . ' ' . $inputs['neighborhood'] . ', ' 
-						. __('notifications.address.area') . __('notifications.colon_after_word') . ' ' . $inputs['area'] . ', ' 
-						. __('notifications.location.city.title') . __('notifications.colon_after_word') . ' ' . $city->city_name, 
-					__('validation.custom.address.exists'), 400);
+            if ($current_address->area_id != $inputs['area_id'] AND $current_address->neighborhood_id != $inputs['neighborhood_id']) {
+                if ($another_address->number == $inputs['number'] AND $another_address->street == $inputs['street'] AND $another_address->area_id == $inputs['area_id'] AND $another_address->neighborhood_id == $inputs['neighborhood_id']) {
+                    return $this->handleError(
+                         __('notifications.address.number') . __('notifications.colon_after_word') . ' ' . $request->number . ', ' 
+                        . __('notifications.address.street') . __('notifications.colon_after_word') . ' ' . $request->street . ', ' 
+                        . __('notifications.address.neighborhood') . __('notifications.colon_after_word') . ' ' . $neighborhood->neighborhood_name . ', ' 
+                        . __('notifications.address.area') . __('notifications.colon_after_word') . ' ' . $area->area_name, __('validation.custom.address.exists'), 400);
                 }
             }
         endforeach;
@@ -162,15 +168,59 @@ class AddressController extends BaseController
 
     // ==================================== CUSTOM METHODS ====================================
     /**
-     * GET: Search address by number / street / neighborhood / area / city.
+     * Change address status of entity to "Principal".
      *
-     * @param  string $data
+     * @param  $id
+     * @param  $entity
+     * @param  $entity_id
      * @return \Illuminate\Http\Response
      */
-    public function search($data)
+    public function markAsMain($id, $entity, $entity_id)
     {
-        $addresses = Address::where('number', 'like', '%' . $data . '%')->orWhere('street', 'like', '%' . $data . '%')->orWhere('neighborhood', 'like', '%' . $data . '%')->orWhere('area', 'like', '%' . $data . '%')->orWhere('city_id', 'like', '%' . $data . '%')->get();
+        $functioning_group = Group::where('group_name', 'Fonctionnement')->first();
+        $main_status = Status::where([['status_name', 'Principal'], ['group_id', $functioning_group->id]])->first();
+		$secondary_status = Status::where([['status_name', 'Secondaire'], ['group_id', $functioning_group->id]])->first();
+        // find address by given ID
+        $address = Address::find($id);
+        // find all addresses to set status as secondary
+        $addresses = Address::where($entity . '_id', $entity_id)->get();
 
-        return $this->handleResponse(ResourcesAddress::collection($addresses), __('notifications.find_all_addresses_success'));
+        // Update "status_id" column of other addresses according to "$secondary_status" ID
+        foreach ($addresses as $address):
+            $address->update([
+                'status_id' => $secondary_status->id,
+                'updated_at' => now()
+            ]);
+        endforeach;
+
+        // Update "status_id" column of current ad$address according to "$main_status" ID
+        $address->update([
+            'status_id' => $main_status->id,
+            'updated_at' => now()
+        ]);
+
+        return $this->handleResponse(new ResourcesAddress($address), __('notifications.update_address_success'));
+    }
+
+    /**
+     * Change address status to "Secondaire".
+     *
+     * @param  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function markAsSecondary($id)
+    {
+        $functioning_group = Group::where('group_name', 'Fonctionnement')->first();
+        $main_status = Status::where([['status_name', 'Principal'], ['group_id', $functioning_group->id]])->first();
+        // find address by given ID
+        $address = Address::find($id);
+
+        // update "status_id" column according "$main_status" ID
+        $address->update([
+            'status_id' => $main_status->id,
+            'updated_at' => now()
+        ]);
+
+        return $this->handleResponse(new ResourcesAddress($address), __('notifications.update_address_success'));
     }
 }

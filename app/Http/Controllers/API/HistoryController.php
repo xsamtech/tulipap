@@ -36,23 +36,14 @@ class HistoryController extends BaseController
         $inputs = [
             'history_url' => $request->history_url,
             'history_content' => $request->history_content,
-            'user_id' => $request->user_id,
-            'seller_id' => $request->seller_id,
-            'third_party_app_id' => $request->third_party_app_id,
-            'type_id' => $request->type_id
+            'type_id' => $request->type_id,
+            'user_id' => $request->user_id
         ];
 
         // Validate required fields
-        if ($inputs['user_id'] == null AND $inputs['seller_id'] == null AND $inputs['third_party_app_id'] == null) {
-            return $this->handleError(__('validation.custom.user_or_seller_or_third_party_app.required'), 400);
-        }
-
-        if ($inputs['user_id'] == ' ' AND $inputs['seller_id'] == ' ' AND $inputs['third_party_app_id'] == ' ') {
-            return $this->handleError(__('validation.custom.user_or_seller_or_third_party_app.required'), 400);
-        }
-
         $validator = Validator::make($inputs, [
-            'type_id' => ['required']
+            'type_id' => ['required'],
+            'user_id' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -95,23 +86,14 @@ class HistoryController extends BaseController
             'id' => $request->id,
             'history_url' => $request->history_url,
             'history_content' => $request->history_content,
-            'user_id' => $request->user_id,
-            'seller_id' => $request->seller_id,
-            'third_party_app_id' => $request->third_party_app_id,
             'type_id' => $request->type_id,
+            'user_id' => $request->user_id,
             'updated_at' => now()
         ];
 
-        if ($inputs['user_id'] == null AND $inputs['seller_id'] == null AND $inputs['third_party_app_id'] == null) {
-            return $this->handleError(__('validation.custom.user_or_seller_or_third_party_app.required'), 400);
-        }
-
-        if ($inputs['user_id'] == ' ' AND $inputs['seller_id'] == ' ' AND $inputs['third_party_app_id'] == ' ') {
-            return $this->handleError(__('validation.custom.user_or_seller_or_third_party_app.required'), 400);
-        }
-
         $validator = Validator::make($inputs, [
-            'type_id' => ['required']
+            'type_id' => ['required'],
+            'user_id' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -140,30 +122,15 @@ class HistoryController extends BaseController
 
     // ==================================== CUSTOM METHODS ====================================
     /**
-     * Select all histories given for a specific entity.
+     * Select all histories by type.
      *
-     * @param  $entity
-     * @param  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function selectByEntity($entity, $id)
-    {
-        $histories = History::where($entity . '_id', $id)->get();
-
-        return $this->handleResponse(ResourcesHistory::collection($histories), __('notifications.find_all_histories_success'));
-    }
-
-    /**
-     * Select all histories with a specific type given for a specific entity.
-     *
-     * @param  $entity
-     * @param  $id
+     * @param  $user_id
      * @param  $type_id
      * @return \Illuminate\Http\Response
      */
-    public function selectByEntityWithType($entity, $id, $type_id)
+    public function selectByType($user_id, $type_id)
     {
-        $histories = History::where($entity . '_id', $id)->where('type_id', $type_id)->get();
+        $histories = History::where([['user_id', $user_id], ['type_id', $type_id]])->get();
 
         return $this->handleResponse(ResourcesHistory::collection($histories), __('notifications.find_all_histories_success'));
     }

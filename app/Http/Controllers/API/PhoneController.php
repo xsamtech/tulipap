@@ -7,9 +7,9 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Group;
 use App\Models\Phone;
+use App\Models\Status;
 use Illuminate\Http\Request;
 use App\Http\Resources\Phone as ResourcesPhone;
-use App\Models\Status;
 
 class PhoneController extends BaseController
 {
@@ -79,6 +79,10 @@ class PhoneController extends BaseController
             return $this->handleError(__('validation.custom.phone.user_or_company_or_office.required'), 400);
         }
 
+        if ($inputs['status_id'] == null OR $inputs['status_id'] == ' ') {
+            return $this->handleError($inputs['status_id'], __('validation.required'), 400);
+        }
+
 		if ($inputs['user_id'] != null) {
 			// Select all user phones to check unique constraint
 			$phones = Phone::where('user_id', $inputs['user_id'])->get();
@@ -92,7 +96,7 @@ class PhoneController extends BaseController
 		}
 
 		if ($inputs['company_id'] != null) {
-			// Select all seller phones to check unique constraint
+			// Select all company phones to check unique constraint
 			$phones = Phone::where('company_id', $inputs['company_id'])->get();
 
 			// Check if phone number already exists
@@ -104,7 +108,7 @@ class PhoneController extends BaseController
 		}
 
 		if ($inputs['office_id'] != null) {
-			// Select all partner phones to check unique constraint
+			// Select all office phones to check unique constraint
 			$phones = Phone::where('office_id', $inputs['office_id'])->get();
 
 			// Check if phone number already exists
@@ -159,7 +163,6 @@ class PhoneController extends BaseController
             'updated_at' => now()
         ];
 
-        // Validate required fields
         if ($inputs['phone_code'] == null OR $inputs['phone_code'] == ' ') {
             return $this->handleError($inputs['phone_code'], __('validation.required'), 400);
         }
@@ -192,6 +195,10 @@ class PhoneController extends BaseController
             return $this->handleError(__('validation.custom.phone.user_or_company_or_office.required'), 400);
         }
 
+        if ($inputs['status_id'] == null OR $inputs['status_id'] == ' ') {
+            return $this->handleError($inputs['status_id'], __('validation.required'), 400);
+        }
+
 		if ($inputs['user_id'] != null) {
 			// Select all user phones and specific phone to check unique constraint
 			$phones = Phone::where('user_id', $inputs['user_id'])->get();
@@ -207,7 +214,7 @@ class PhoneController extends BaseController
 		}
 
 		if ($inputs['company_id'] != null) {
-			// Select all seller phones and specific phone to check unique constraint
+			// Select all comapny phones and specific phone to check unique constraint
 			$phones = Phone::where('company_id', $inputs['company_id'])->get();
 			$current_phone = Phone::find($inputs['id']);
 
@@ -221,7 +228,7 @@ class PhoneController extends BaseController
 		}
 
 		if ($inputs['office_id'] != null) {
-			// Select all partner phones and specific phone to check unique constraint
+			// Select all office phones and specific phone to check unique constraint
 			$phones = Phone::where('office_id', $inputs['office_id'])->get();
 			$current_phone = Phone::find($inputs['id']);
 

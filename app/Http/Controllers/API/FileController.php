@@ -35,32 +35,36 @@ class FileController extends BaseController
     {
         // Get inputs
         $inputs = [
-            'file_content' => $request->file_content,
-            'file_description' => $request->file_description,
-            'file_content' => $request->file_content,
-            'album_id' => $request->album_id,
-            'status_id' => $request->status_id
+            'file_name' => $request->file_name,
+            'file_url' => $request->file_url,
+            'type_id' => $request->type_id,
+            'status_id' => $request->status_id,
+            'album_id' => $request->album_id
         ];
         // Select all files to check unique constraint
         $files = File::where('album_id', $inputs['album_id'])->get();
 
         // Validate required fields
-        if ($inputs['file_content'] == null OR $inputs['file_content'] == ' ') {
-            return $this->handleError($inputs['file_content'], __('validation.required'), 400);
+        if ($inputs['file_url'] == null OR $inputs['file_url'] == ' ') {
+            return $this->handleError($inputs['file_url'], __('validation.required'), 400);
         }
 
-        if ($inputs['album_id'] == null OR $inputs['album_id'] == ' ') {
-            return $this->handleError($inputs['album_id'], __('validation.required'), 400);
+        if ($inputs['type_id'] == null OR $inputs['type_id'] == ' ') {
+            return $this->handleError($inputs['type_id'], __('validation.required'), 400);
         }
 
         if ($inputs['status_id'] == null OR $inputs['status_id'] == ' ') {
             return $this->handleError($inputs['status_id'], __('validation.required'), 400);
         }
 
+        if ($inputs['album_id'] == null OR $inputs['album_id'] == ' ') {
+            return $this->handleError($inputs['album_id'], __('validation.required'), 400);
+        }
+
         // Check if file name already exists
         foreach ($files as $another_file):
-            if ($another_file->file_content == $inputs['file_content']) {
-                return $this->handleError($inputs['file_content'], __('validation.custom.file_name.exists'), 400);
+            if ($another_file->file_url == $inputs['file_url']) {
+                return $this->handleError($inputs['file_url'], __('validation.custom.file.exists'), 400);
             }
         endforeach;
 
@@ -98,33 +102,37 @@ class FileController extends BaseController
         // Get inputs
         $inputs = [
             'id' => $request->id,
-            'file_content' => $request->file_content,
-            'file_description' => $request->file_description,
-            'file_content' => $request->file_content,
-            'album_id' => $request->album_id,
+            'file_name' => $request->file_name,
+            'file_url' => $request->file_url,
+            'type_id' => $request->type_id,
             'status_id' => $request->status_id,
+            'album_id' => $request->album_id,
             'updated_at' => now()
         ];
         // Select all files and specific file to check unique constraint
         $files = File::where('album_id', $inputs['album_id'])->get();
         $current_file = File::find($inputs['id']);
 
-        if ($inputs['file_content'] == null OR $inputs['file_content'] == ' ') {
-            return $this->handleError($inputs['file_content'], __('validation.required'), 400);
+        if ($inputs['file_url'] == null OR $inputs['file_url'] == ' ') {
+            return $this->handleError($inputs['file_url'], __('validation.required'), 400);
         }
 
-        if ($inputs['album_id'] == null OR $inputs['album_id'] == ' ') {
-            return $this->handleError($inputs['album_id'], __('validation.required'), 400);
+        if ($inputs['type_id'] == null OR $inputs['type_id'] == ' ') {
+            return $this->handleError($inputs['type_id'], __('validation.required'), 400);
         }
 
         if ($inputs['status_id'] == null OR $inputs['status_id'] == ' ') {
             return $this->handleError($inputs['status_id'], __('validation.required'), 400);
         }
 
+        if ($inputs['album_id'] == null OR $inputs['album_id'] == ' ') {
+            return $this->handleError($inputs['album_id'], __('validation.required'), 400);
+        }
+
         foreach ($files as $another_file):
-            if ($current_file->file_content != $inputs['file_content']) {
-                if ($another_file->file_content == $inputs['file_content']) {
-                    return $this->handleError($inputs['file_content'], __('validation.custom.file_name.exists'), 400);
+            if ($current_file->file_url != $inputs['file_url']) {
+                if ($another_file->file_url == $inputs['file_url']) {
+                    return $this->handleError($inputs['file_url'], __('validation.custom.file.exists'), 400);
                 }
             }
         endforeach;

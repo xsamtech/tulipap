@@ -36,6 +36,7 @@ class CountryController extends BaseController
             'country_name' => $request->country_name,
             'country_abbreviation' => $request->country_abbreviation,
             'country_phone_code' => $request->country_phone_code,
+            'country_lang_code' => $request->country_lang_code,
             'region_id' => $request->region_id
         ];
         // Select all countries of a same region to check unique constraint
@@ -94,6 +95,7 @@ class CountryController extends BaseController
             'country_name' => $request->country_name,
             'country_abbreviation' => $request->country_abbreviation,
             'country_phone_code' => $request->country_phone_code,
+            'country_lang_code' => $request->country_lang_code,
             'region_id' => $request->region_id,
             'updated_at' => now()
         ];

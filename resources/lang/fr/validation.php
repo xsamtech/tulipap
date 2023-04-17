@@ -217,7 +217,7 @@ return [
             'exists' => 'Ce nom de société existe déjà'
         ],
         'card_number' => [
-            'exists' => 'Ce n° de carte bancaire existe déjà'
+            'exists' => 'Ce n° de carte existe déjà'
         ],
         'network_url' => [
             'exists' => 'Cette URL existe déjà'
@@ -225,8 +225,14 @@ return [
         'code' => [
             'exists' => 'Ce code existe déjà'
         ],
+        'billing_method' => [
+            'exists' => 'Cette méthode de facturation existe déjà'
+        ],
         'album_name' => [
             'exists' => 'Ce nom d\'album existe déjà'
+        ],
+        'file' => [
+            'exists' => 'Ce fichier existe déjà dans cet album'
         ],
         'icon_name' => [
             'exists' => 'Ce nom d\'icône existe déjà'
@@ -241,7 +247,10 @@ return [
             'exists' => 'Ce nom de zone de couverture existe déjà'
         ],
         'invoice_number' => [
-            'required' => 'Ce n° de facture existe déjà pour la société'
+            'required' => 'Ce n° de facture existe déjà'
+        ],
+        'invoiced_period' => [
+            'required' => 'La période facturée pour cette année est déjà créée pour ce client'
         ],
     ],
 

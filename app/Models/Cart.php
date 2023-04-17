@@ -40,4 +40,13 @@ class Cart extends Model
     {
         return $this->hasMany(PrepaidCard::class);
     }
+
+    /**
+     * MANY-TO-ONE
+     * Several albums for a cart
+     */
+    public function albums()
+    {
+        return $this->hasMany(Album::class);
+    }
 }

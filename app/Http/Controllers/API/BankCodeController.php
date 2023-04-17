@@ -68,6 +68,10 @@ class BankCodeController extends BaseController
             return $this->handleError($inputs['service_id'], __('validation.required'), 400);
         }
 
+        if ($inputs['status_id'] == null OR $inputs['status_id'] == ' ') {
+            return $this->handleError($inputs['status_id'], __('validation.required'), 400);
+        }
+
         if ($inputs['user_id'] != null) {
 			// Select all bank codes to check unique constraint
 			$bank_codes = BankCode::where('user_id', $inputs['user_id'])->get();
@@ -159,6 +163,10 @@ class BankCodeController extends BaseController
 
         if ($inputs['service_id'] == null OR $inputs['service_id'] == ' ') {
             return $this->handleError($inputs['service_id'], __('validation.required'), 400);
+        }
+
+        if ($inputs['status_id'] == null OR $inputs['status_id'] == ' ') {
+            return $this->handleError($inputs['status_id'], __('validation.required'), 400);
         }
 
 		if ($inputs['user_id'] != null) {

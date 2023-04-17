@@ -36,18 +36,18 @@ class SmsNotificationController extends BaseController
     {
         // Get inputs
         $inputs = [
-            'from_sellers' => $request->from_sellers,
-            'reaction' => $request->reaction,
-            'subscription' => $request->subscription,
+            'update' => $request->update,
+            'advertising' => $request->advertising,
+            'communique' => $request->communique,
             'tips_tricks' => $request->tips_tricks,
             'preference_id' => $request->preference_id,
             'status_id' => $request->status_id
         ];
         // Validate required fields
         $validator = Validator::make($inputs, [
-            'from_sellers' => ['required'],
-            'reaction' => ['required'],
-            'subscription' => ['required'],
+            'update' => ['required'],
+            'advertising' => ['required'],
+            'communique' => ['required'],
             'tips_tricks' => ['required'],
             'preference_id' => ['required'],
             'status_id' => ['required']
@@ -91,9 +91,9 @@ class SmsNotificationController extends BaseController
         // Get inputs
         $inputs = [
             'id' => $request->id,
-            'from_sellers' => $request->from_sellers,
-            'reaction' => $request->reaction,
-            'subscription' => $request->subscription,
+            'update' => $request->update,
+            'advertising' => $request->advertising,
+            'communique' => $request->communique,
             'tips_tricks' => $request->tips_tricks,
             'preference_id' => $request->preference_id,
             'status_id' => $request->status_id,
@@ -101,9 +101,9 @@ class SmsNotificationController extends BaseController
         ];
         // Validate required fields
         $validator = Validator::make($inputs, [
-            'from_sellers' => ['required'],
-            'reaction' => ['required'],
-            'subscription' => ['required'],
+            'update' => ['required'],
+            'advertising' => ['required'],
+            'communique' => ['required'],
             'tips_tricks' => ['required'],
             'preference_id' => ['required'],
             'status_id' => ['required']

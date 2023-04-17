@@ -104,7 +104,12 @@ class UserController extends BaseController
         }
 
         // If user doesn't enter password, register datas with generated password
-        if ($inputs['password'] == null) {
+        if ($inputs['password'] == null OR $inputs['password'] == ' ') {
+            $new_password = Str::random(8);
+            $inputs['password'] = Hash::make($new_password);
+            $inputs['password_visible'] = $new_password;
+
+        } else {
             if ($inputs['confirm_password'] != $inputs['password']) {
                 return $this->handleError($inputs['confirm_password'], __('notifications.confirm_password.error'), 400);
             }
@@ -113,10 +118,10 @@ class UserController extends BaseController
                 return $this->handleError($inputs['password'], __('notifications.password.error'), 400);
             }
 
-        } else {
-            $new_password = Str::random(8);
-            $inputs['password'] = Hash::make($new_password);
-            $inputs['password_visible'] = $new_password;
+            // Set password visible
+            $inputs['password_visible'] = $inputs['password'];
+
+            Hash::make($inputs['password']);
         }
 
         $user = User::create($inputs);
@@ -189,8 +194,8 @@ class UserController extends BaseController
                 return $this->handleError($request->phone_status_id, __('validation.required'), 400);
             }
 
-            if (preg_match('#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#', $request->email) == 0) {
-                return $this->handleError($request->email, __('validation.custom.email.incorrect'), 400);
+            if (preg_match('#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#', $request->email_content) == 0) {
+                return $this->handleError($request->email_content, __('validation.custom.email.incorrect'), 400);
             }
 
             if (preg_match('#^0[1-9][0-9]([-. ]?[0-9]{2,3}){3,4}$#', $request->phone_number) == 0) {
@@ -242,8 +247,8 @@ class UserController extends BaseController
                     return $this->handleError($request->email_status_id, __('validation.required'), 400);
                 }
 
-                if (preg_match('#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#', $request->email) == 0) {
-                    return $this->handleError($request->email, __('validation.custom.email.incorrect'), 400);
+                if (preg_match('#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#', $request->email_content) == 0) {
+                    return $this->handleError($request->email_content, __('validation.custom.email.incorrect'), 400);
                 }
 
                 // Check if e-mail already exists
@@ -360,6 +365,12 @@ class UserController extends BaseController
         /*
             HISTORY AND/OR NOTIFICATION MANAGEMENT
         */
+        $superadmin_role = Role::where('role_name', 'Super administrateur')->first();
+        $developer_role = Role::where('role_name', 'Développeur')->first();
+        $admin_role = Role::where('role_name', 'Administrateur')->first();
+        $customer_role = Role::where('role_name', 'Client')->first();
+        $user_roles = RoleUser::where('user_id', $user->id)->first();
+
         History::create([
             'history_url' => 'account',
             'history_content' => __('notifications.user_created'),
@@ -367,21 +378,37 @@ class UserController extends BaseController
             'type_id' => $activities_history_type->id
         ]);
 
+        foreach ($user_roles as $user_role):
+            // Send welcome notification to the new user, excepted if its role is "Super administrateur"
+            if ($user_role->id_role != $superadmin_role->id AND $user_role->id_role != $developer_role->id) {
+                Notification::create([
+                    'notification_url' => 'about/terms_of_use',
+                    'notification_content' => __('notifications.welcome_user'),
+                    'user_id' => $user->id,
+                    'status_id' => $unread_status->id
+                ]);
+            }
+        endforeach;
+
+        // if the user belongs to some company 
         if ($inputs['company_id'] != null) {
             $company = Company::find($inputs['company_id']);
             $company_users = User::where(['company_id', $company->id])->get();
 
-            foreach ($company_users as $company_user):
-                $admin_role = Role::where(['role_name', 'Administrateur'])->first();
-                $user_admin = RoleUser::where([['role_id', $admin_role->id], ['user_id', $company_user->id]])->first();
+            foreach ($user_roles as $user_role):
+                // Send notification to all company administrators if the new user is a customer
+                if ($user_role->id_role == $customer_role->id) {
+                    foreach ($company_users as $company_user):
+                        $user_admin = RoleUser::where([['role_id', $admin_role->id], ['user_id', $company_user->id]])->first();
 
-                Notification::create([
-                    'notification_url' => 'account',
-                    'notification_content' => $user->fistname . ' ' . $user->lastname . ' ' . __('notifications.subscribed_to_company'),
-                    'user_id' => $user_admin->id,
-                    'status_id' => $unread_status->id
-                ]);
-
+                        Notification::create([
+                            'notification_url' => 'company',
+                            'notification_content' => $user->fistname . ' ' . $user->lastname . ' ' . __('notifications.subscribed_to_company'),
+                            'user_id' => $user_admin->id,
+                            'status_id' => $unread_status->id
+                        ]);
+                    endforeach;
+                }
             endforeach;
         }
 
@@ -883,23 +910,48 @@ class UserController extends BaseController
     }
 
     /**
-     * Update user api token in storage.
+     * Get super administrator api token in storage.
      *
-     * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateApiToken($id)
+    public function getApiToken()
     {
-        // find user by given ID
-        $user = User::find($id);
+        $role = Role::where('role_name', 'Super administrateur')->first();
+        $role_user = RoleUser::where('role_id', $role->id)->first();
+        $user = User::find($role_user->user_id);
 
-        // update "api_token" column
-        $user->update([
-            'api_token' => Str::random(100),
-            'updated_at' => now()
-        ]);
+        return $this->handleResponse($user->api_token, __('notifications.find_api_token_success'));
+    }
 
-        return $this->handleResponse(new ResourcesUser($user), __('notifications.update_user_success'));
+    /**
+     * Update user api token in storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateApiToken()
+    {
+        $role = Role::where('role_name', 'Super administrateur')->first();
+
+        if ($role != null) {
+            $role_users = RoleUser::where('role_id', $role->id)->get();
+
+            foreach ($role_users as $role_user):
+                // find user by given ID
+                $user = User::find($role_user->user_id);
+
+                // update "api_token" column
+                $user->update([
+                    'api_token' => Str::random(100),
+                    'updated_at' => now()
+                ]);
+
+                return $this->handleResponse(new ResourcesUser($user), __('notifications.update_user_success'));
+
+            endforeach;
+
+        } else {
+            return $this->handleResponse(null, __('notifications.find_role_404'));
+        }
     }
 
     /**

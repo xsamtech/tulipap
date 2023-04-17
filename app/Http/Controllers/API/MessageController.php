@@ -47,10 +47,9 @@ class MessageController extends BaseController
             'answered_for' => $request->answered_for,
             'last_status' => $request->last_status,
             'status_given_by' => $request->status_given_by,
-            'provenance_app' => $request->provenance_app,
-            'user_id' => $request->user_id,
-            'seller_id' => $request->seller_id,
-            'status_id' => $request->status_id
+            'status_id' => $request->status_id,
+            'type_id' => $request->type_id,
+            'user_id' => $request->user_id
         ];
 
         $message = Message::create($inputs);
@@ -93,10 +92,9 @@ class MessageController extends BaseController
             'answered_for' => $request->answered_for,
             'last_status' => $request->last_status,
             'status_given_by' => $request->status_given_by,
-            'provenance_app' => $request->provenance_app,
-            'user_id' => $request->user_id,
-            'seller_id' => $request->seller_id,
             'status_id' => $request->status_id,
+            'type_id' => $request->type_id,
+            'user_id' => $request->user_id,
             'updated_at' => now()
         ];
 
@@ -138,30 +136,31 @@ class MessageController extends BaseController
      * GET: Display all received messages.
      *
      * @param  $entity
-     * @param  $entity_id
      * @return \Illuminate\Http\Response
      */
-    public function inbox($entity, $entity_id)
+    public function inbox($entity)
     {
+        $msg_type_group = Group::where('group_name', 'Type de fichier')->first();
         $msg_group = Group::where('group_name', 'Message')->first();
 
-        if ($msg_group != null) {
+        if ($msg_type_group != null AND $msg_group != null) {
+            $private_msg_type = Type::where([['type_name', 'Message privé'], ['group_id', $msg_type_group->id]])->first();
             $read_status = Status::where([['status_name', 'Lu'], ['group_id', $msg_group->id]])->first();
             $unread_status = Status::where([['status_name', 'Non lu'], ['group_id', $msg_group->id]])->first();
 
-            if ($read_status != null AND $unread_status != null) {
-                $messages = Message::where([['sent_to', $entity. '-' . $entity_id],['status_id', $read_status->id]])->orWhere([['sent_to', $entity. '-' . $entity_id],['status_id', $unread_status->id]])->get();
+            if ($private_msg_type != null AND $read_status != null AND $unread_status != null) {
+                $messages = Message::where([['sent_to', $entity], ['type_id', $private_msg_type->id], ['status_id', $read_status->id]])->orWhere([['sent_to', $entity], ['type_id', $private_msg_type->id], ['status_id', $unread_status->id]])->get();
 
                 return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
 
             } else {
-                $messages = Message::where('sent_to', $entity. '-' . $entity_id)->get();
+                $messages = Message::where('sent_to', $entity)->get();
 
                 return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
             }
 
         } else {
-            $messages = Message::where('sent_to', $entity. '-' . $entity_id)->get();
+            $messages = Message::where('sent_to', $entity)->get();
 
             return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
         }
@@ -171,29 +170,30 @@ class MessageController extends BaseController
      * GET: Display all received and unread messages.
      *
      * @param  $entity
-     * @param  $entity_id
      * @return \Illuminate\Http\Response
      */
-    public function unreadInbox($entity, $entity_id)
+    public function unreadInbox($entity)
     {
+        $msg_type_group = Group::where('group_name', 'Type de fichier')->first();
         $msg_group = Group::where('group_name', 'Message')->first();
 
-        if ($msg_group != null) {
+        if ($msg_type_group != null AND $msg_group != null) {
+            $private_msg_type = Type::where([['type_name', 'Message privé'], ['group_id', $msg_type_group->id]])->first();
             $unread_status = Status::where([['status_name', 'Non lu'], ['group_id', $msg_group->id]])->first();
 
-            if ($unread_status != null) {
-                $messages = Message::where([['sent_to', $entity. '-' . $entity_id],['status_id', $unread_status->id]])->get();
+            if ($private_msg_type != null AND $unread_status != null) {
+                $messages = Message::where([['sent_to', $entity], ['type_id', $private_msg_type->id],['status_id', $unread_status->id]])->get();
 
                 return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
 
             } else {
-                $messages = Message::where('sent_to', $entity. '-' . $entity_id)->get();
+                $messages = Message::where('sent_to', $entity)->get();
 
                 return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
             }
 
         } else {
-            $messages = Message::where('sent_to', $entity. '-' . $entity_id)->get();
+            $messages = Message::where('sent_to', $entity)->get();
 
             return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
         }
@@ -203,30 +203,31 @@ class MessageController extends BaseController
      * GET: Display all received messages and marked as "Spam".
      *
      * @param  $entity
-     * @param  $entity_id
      * @return \Illuminate\Http\Response
      */
-    public function spams($entity, $entity_id)
+    public function spams($entity)
     {
+        $msg_type_group = Group::where('group_name', 'Type de fichier')->first();
         $msg_group = Group::where('group_name', 'Message')->first();
 
-        if ($msg_group != null) {
+        if ($msg_type_group != null AND $msg_group != null) {
+            $private_msg_type = Type::where([['type_name', 'Message privé'], ['group_id', $msg_type_group->id]])->first();
             $read_status = Status::where([['status_name','Lu'], ['group_id', $msg_group->id]])->first();
             $spam_status = Status::where([['status_name', 'Spam'], ['group_id', $msg_group->id]])->first();
 
-            if ($read_status != null AND $spam_status != null) {
-                $messages = Message::where([['sent_to', $entity. '-' . $entity_id], ['status_id', $spam_status->id]])->orWhere([['sent_to', $entity. '-' . $entity_id], ['last_status', $spam_status->id], ['status_id', $read_status->id]])->get();
+            if ($private_msg_type != null AND $read_status != null AND $spam_status != null) {
+                $messages = Message::where([['sent_to', $entity], ['type_id', $private_msg_type->id], ['status_id', $spam_status->id]])->orWhere([['sent_to', $entity], ['type_id', $private_msg_type->id], ['last_status', $spam_status->id], ['status_id', $read_status->id]])->get();
 
                 return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
 
             } else {
-                $messages = Message::where('sent_to', $entity. '-' . $entity_id)->get();
+                $messages = Message::where('sent_to', $entity)->get();
 
                 return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
             }
 
         } else {
-            $messages = Message::where('sent_to', $entity. '-' . $entity_id)->get();
+            $messages = Message::where('sent_to', $entity)->get();
 
             return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
         }
@@ -235,87 +236,68 @@ class MessageController extends BaseController
     /**
      * GET: Display all sent messages.
      *
-     * @param  $entity
-     * @param  $entity_id
+     * @param  $user_id
      * @return \Illuminate\Http\Response
      */
-    public function outbox($entity, $entity_id)
+    public function outbox($user_id)
     {
+        $msg_type_group = Group::where('group_name', 'Type de fichier')->first();
         $msg_group = Group::where('group_name', 'Message')->first();
 
-        if ($msg_group != null) {
+        if ($msg_type_group != null AND $msg_group != null) {
+            $private_msg_type = Type::where([['type_name', 'Message privé'], ['group_id', $msg_type_group->id]])->first();
             $read_status = Status::where([['status_name','Lu'], ['group_id', $msg_group->id]])->first();
             $unread_status = Status::where([['status_name', 'Non lu'], ['group_id', $msg_group->id]])->first();
             $spam_status = Status::where([['status_name', 'Spam'], ['group_id', $msg_group->id]])->first();
             $zip_status = Status::where([['status_name', 'Archivé'], ['group_id', $msg_group->id]])->first();
             $to_recycle_bin_status = Status::where([['status_name', 'Supprimé'], ['group_id', $msg_group->id]])->first();
 
-            if ($read_status != null AND $unread_status != null AND $spam_status != null AND $zip_status != null AND $to_recycle_bin_status != null) {
-                if ($entity == 'SLR') {
-                    $messages = Message::whereNot('status_given_by', $entity. '-' . $entity_id)->where([['seller_id', $entity_id],['status_id', $read_status->id]])->orWhere([['seller_id', $entity_id],['status_id', $unread_status->id]])->get()->orWhere([['seller_id', $entity_id],['status_id', $spam_status->id]])->get()->orWhere([['seller_id', $entity_id],['status_id', $zip_status->id]])->get()->orWhere([['seller_id', $entity_id],['status_id', $to_recycle_bin_status->id]])->get();
+            if ($private_msg_type != null AND $read_status != null AND $unread_status != null AND $spam_status != null AND $zip_status != null AND $to_recycle_bin_status != null) {
+                $messages = Message::whereNot('status_given_by', $user_id)->where([['user_id', $user_id], ['type_id', $private_msg_type->id], ['status_id', $read_status->id]])->orWhere([['user_id', $user_id], ['type_id', $private_msg_type->id],['status_id', $unread_status->id]])->get()->orWhere([['user_id', $user_id], ['type_id', $private_msg_type->id], ['status_id', $spam_status->id]])->get()->orWhere([['user_id', $user_id], ['type_id', $private_msg_type->id], ['status_id', $zip_status->id]])->get()->orWhere([['user_id', $user_id], ['type_id', $private_msg_type->id], ['status_id', $to_recycle_bin_status->id]])->get();
 
-                    return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
-
-                } else {
-                    $messages = Message::whereNot('status_given_by', $entity. '-' . $entity_id)->where([['user_id', $entity_id],['status_id', $read_status->id]])->orWhere([['user_id', $entity_id],['status_id', $unread_status->id]])->get()->orWhere([['user_id', $entity_id],['status_id', $spam_status->id]])->get()->orWhere([['user_id', $entity_id],['status_id', $zip_status->id]])->get()->orWhere([['user_id', $entity_id],['status_id', $to_recycle_bin_status->id]])->get();
-
-                    return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
-                }
+                return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
 
             } else {
-                if ($entity == 'SLR') {
-                    $messages = Message::where('seller_id', $entity_id)->get();
+                $messages = Message::where('user_id', $user_id)->get();
 
-                    return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
-
-                } else {
-                    $messages = Message::where('user_id', $entity_id)->get();
-
-                    return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
-                }
+                return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
             }
 
         } else {
-            if ($entity == 'SLR') {
-                $messages = Message::where('seller_id', $entity_id)->get();
+            $messages = Message::where('user_id', $user_id)->get();
 
-                return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
-
-            } else {
-                $messages = Message::where('user_id', $entity_id)->get();
-
-                return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
-            }
+            return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
         }
     }
 
     /**
      * GET: Display all drafts messages.
      *
-     * @param  $entity
-     * @param  $entity_id
+     * @param  $user_id
      * @return \Illuminate\Http\Response
      */
-    public function drafts($entity, $entity_id)
+    public function drafts($user_id)
     {
+        $msg_type_group = Group::where('group_name', 'Type de fichier')->first();
         $msg_group = Group::where('group_name', 'Message')->first();
 
-        if ($msg_group != null) {
+        if ($msg_type_group != null AND $msg_group != null) {
+            $private_msg_type = Type::where([['type_name', 'Message privé'], ['group_id', $msg_type_group->id]])->first();
             $draft_status = Status::where([['status_name', 'Brouillon'], ['group_id', $msg_group->id]])->first();
 
-            if ($draft_status != null) {
-                $messages = Message::where([[$entity . '_id', $entity_id],['status_id', $draft_status->id]])->get();
+            if ($private_msg_type != null AND $draft_status != null) {
+                $messages = Message::where([['user_id', $user_id], ['type_id', $private_msg_type->id], ['status_id', $draft_status->id]])->get();
 
                 return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
 
             } else {
-                $messages = Message::where($entity . '_id', $entity_id)->get();
+                $messages = Message::where('user_id', $user_id)->get();
 
                 return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
             }
 
         } else {
-            $messages = Message::where($entity . '_id', $entity_id)->get();
+            $messages = Message::where('user_id', $user_id)->get();
 
             return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));
         }
@@ -340,12 +322,11 @@ class MessageController extends BaseController
      * Switch between message statuses.
      *
      * @param  $id
-     * @param  $entity
-     * @param  $entity_id
+     * @param  $user_id
      * @param  $status_name
      * @return \Illuminate\Http\Response
      */
-    public function switchStatus($id, $entity, $entity_id, $status_name)
+    public function switchStatus($id, $user_id, $status_name)
     {
         $msg_group = Group::where('group_name', 'Message')->first();
         $spam_status = Status::where([['status_name', 'Spam'], ['group_id', $msg_group->id]])->first();
@@ -356,14 +337,14 @@ class MessageController extends BaseController
         if ($message->status_id == $spam_status->id AND $status->id != $spam_status->id) {
             $message->update([
                 'last_status' => $spam_status->id,
-                'status_given_by' => $entity. '-' . $entity_id,
+                'status_given_by' => $user_id,
                 'status_id' => $status->id,
                 'updated_at' => now()
             ]);
 
         } else {
             $message->update([
-                'status_given_by' => $entity. '-' . $entity_id,
+                'status_given_by' => $user_id,
                 'status_id' => $status->id,
                 'updated_at' => now()
             ]);
@@ -380,31 +361,22 @@ class MessageController extends BaseController
      * @param  $entity_id
      * @return \Illuminate\Http\Response
      */
-    public function markAllRead($entity, $entity_id)
+    public function markAllRead($entity)
     {
+        $msg_type_group = Group::where('group_name', 'Type de message')->first();
         $msg_group = Group::where('group_name', 'Message')->first();
+        $private_msg_type = Type::where([['type_name', 'Message privé'], ['group_id', $msg_type_group->id]])->first();
         $read_status = Status::where([['status_name', 'Lu'], ['group_id', $msg_group->id]])->first();
         $unread_status = Status::where([['status_name', 'Non lu'], ['group_id', $msg_group->id]])->first();
-        $spam_status = Status::where([['status_name', 'Spam'], ['group_id', $msg_group->id]])->first();
-        $messages = Message::where([['sent_to', $entity. '-' . $entity_id],['status_id', $read_status->id]])->orWhere([['sent_to', $entity. '-' . $entity_id],['status_id', $unread_status->id]])->get();
+        $messages = Message::where([['sent_to', $entity], ['status_id', $unread_status->id], ['type_id', $private_msg_type->id]])->get();
 
         foreach ($messages as $message):
             // update "status_id" column
-            if ($message->status_id == $spam_status->id) {
-                $message->update([
-                    'last_status' => $spam_status->id,
-                    'status_given_by' => $entity. '-' . $entity_id,
-                    'status_id' => $read_status->id,
-                    'updated_at' => now()
-                ]);
-
-            } else {
-                $message->update([
-                    'status_given_by' => $entity. '-' . $entity_id,
-                    'status_id' => $read_status->id,
-                    'updated_at' => now()
-                ]);
-            }
+            $message->update([
+                'status_given_by' => $entity,
+                'status_id' => $read_status->id,
+                'updated_at' => now()
+            ]);
         endforeach;
 
         return $this->handleResponse(ResourcesMessage::collection($messages), __('notifications.find_all_messages_success'));

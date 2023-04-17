@@ -114,7 +114,7 @@ class AboutSubjectController extends BaseController
 
         $about_subjects = AboutSubject::all();
 
-        return $this->handleResponse(ResourcesAboutSubject::collection($about_subjects), __('notifications.delete_about_content_success'));
+        return $this->handleResponse(ResourcesAboutSubject::collection($about_subjects), __('notifications.delete_about_subject_success'));
     }
 
     // ==================================== CUSTOM METHODS ====================================
@@ -146,7 +146,7 @@ class AboutSubjectController extends BaseController
         // find about subject by ID
         $about_subject = AboutSubject::find($id);
 
-        if ($about_subject->status_id = $deactivated_status->id) {
+        if ($about_subject->status_id == $deactivated_status->id) {
             // find all about subjects with the same name as current about subject
             $about_subjects = AboutSubject::where('subject', $data)->get();
 
@@ -163,7 +163,7 @@ class AboutSubjectController extends BaseController
             } else {
                 $status = Status::create([
                     'status_name' => 'Désactivé',
-                    'status_description' => 'Invisibilité et impossibilité de fonctionner dans certains espaces des applications.',
+                    'status_description' => 'Visibilité restreinte dans la plateforme ; et donc, impossibilité de faire des opérations.',
                     'group_id' => 1
                 ]);
 

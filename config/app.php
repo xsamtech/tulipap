@@ -119,9 +119,9 @@ return [
     |
     */
     'available_locales' => [
-        'Lingala' => 'en',
+        'English' => 'en',
         'Français' => 'fr',
-        'English' => 'ln'
+        'Lingala' => 'ln'
     ],
 
     /*

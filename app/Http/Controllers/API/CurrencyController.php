@@ -33,26 +33,21 @@ class CurrencyController extends BaseController
     {
         // Get inputs
         $inputs = [
-            'name' => $request->name,
-            'abbreviation' => $request->abbreviation,
-            'country_id' => $request->country_id
+            'currency_name' => $request->currency_name,
+            'currency_abbreviation' => $request->currency_abbreviation
         ];
         // Select all currencies to check unique constraint
         $currencies = Currency::all();
 
         // Validate required fields
-        if ($inputs['name'] == null OR $inputs['name'] == ' ') {
-            return $this->handleError($inputs['name'], __('validation.required'), 400);
-        }
-
-        if ($inputs['country_id'] == null OR $inputs['country_id'] == ' ') {
-            return $this->handleError($inputs['country_id'], __('validation.required'), 400);
+        if ($inputs['currency_name'] == null OR $inputs['currency_name'] == ' ') {
+            return $this->handleError($inputs['currency_name'], __('validation.required'), 400);
         }
 
         // Check if currency name already exists
         foreach ($currencies as $another_currency):
-            if ($another_currency->name == $inputs['name']) {
-                return $this->handleError($inputs['name'], __('validation.custom.currency_name.exists'), 400);
+            if ($another_currency->currency_name == $inputs['currency_name']) {
+                return $this->handleError($inputs['currency_name'], __('validation.custom.currency_name.exists'), 400);
             }
         endforeach;
 
@@ -90,27 +85,22 @@ class CurrencyController extends BaseController
         // Get inputs
         $inputs = [
             'id' => $request->id,
-            'name' => $request->name,
-            'abbreviation' => $request->abbreviation,
-            'country_id' => $request->country_id,
+            'currency_name' => $request->currency_name,
+            'currency_abbreviation' => $request->currency_abbreviation,
             'updated_at' => now()
         ];
         // Select all currencies and specific currency to check unique constraint
         $currencies = Currency::all();
         $current_currency = Currency::find($inputs['id']);
 
-        if ($inputs['name'] == null OR $inputs['name'] == ' ') {
-            return $this->handleError($inputs['name'], __('validation.required'), 400);
-        }
-
-        if ($inputs['country_id'] == null OR $inputs['country_id'] == ' ') {
-            return $this->handleError($inputs['country_id'], __('validation.required'), 400);
+        if ($inputs['currency_name'] == null OR $inputs['currency_name'] == ' ') {
+            return $this->handleError($inputs['currency_name'], __('validation.required'), 400);
         }
 
         foreach ($currencies as $another_currency):
-            if ($current_currency->name != $inputs['name']) {
-                if ($another_currency->name == $inputs['name']) {
-                    return $this->handleError($inputs['name'], __('validation.custom.currency_name.exists'), 400);
+            if ($current_currency->currency_name != $inputs['currency_name']) {
+                if ($another_currency->currency_name == $inputs['currency_name']) {
+                    return $this->handleError($inputs['currency_name'], __('validation.custom.currency_name.exists'), 400);
                 }
             }
         endforeach;

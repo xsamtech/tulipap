@@ -64,6 +64,8 @@ Route::middleware(['auth:api', 'localization'])->group(function () {
 Route::group(['middleware' => ['api', 'localization']], function () {
     Route::resource('user', 'App\Http\Controllers\API\UserController');
 
+    Route::get('user/get_api_token', 'App\Http\Controllers\API\UserController@getApiToken')->name('user.get_api_token');
+    Route::put('user/update_api_token', 'App\Http\Controllers\API\UserController@updateApiToken')->name('user.update_api_token');
     Route::post('user/login', 'App\Http\Controllers\API\UserController@login')->name('user.login');
 });
 Route::group(['middleware' => ['api', 'auth:api', 'localization']], function () {
@@ -81,6 +83,8 @@ Route::group(['middleware' => ['api', 'auth:api', 'localization']], function () 
     Route::resource('country', 'App\Http\Controllers\API\CountryController');
     Route::resource('province', 'App\Http\Controllers\API\ProvinceController');
     Route::resource('city', 'App\Http\Controllers\API\CityController');
+    Route::resource('area', 'App\Http\Controllers\API\AreaController');
+    Route::resource('neighborhood', 'App\Http\Controllers\API\NeighborhoodController');
     Route::resource('address', 'App\Http\Controllers\API\AddressController');
     Route::resource('phone', 'App\Http\Controllers\API\PhoneController');
     Route::resource('email', 'App\Http\Controllers\API\EmailController');
@@ -90,10 +94,10 @@ Route::group(['middleware' => ['api', 'auth:api', 'localization']], function () 
     Route::resource('company', 'App\Http\Controllers\API\CompanyController');
     Route::resource('cart', 'App\Http\Controllers\API\CartController');
     Route::resource('invoice', 'App\Http\Controllers\API\InvoiceController');
+    Route::resource('prepaid_card', 'App\Http\Controllers\API\PrepaidCardController');
     Route::resource('message', 'App\Http\Controllers\API\MessageController');
     Route::resource('notification', 'App\Http\Controllers\API\NotificationController');
     Route::resource('history', 'App\Http\Controllers\API\HistoryController');
-    Route::resource('preference', 'App\Http\Controllers\API\PreferenceController');
     Route::resource('email_notification', 'App\Http\Controllers\API\EmailNotificationController');
     Route::resource('sms_notification', 'App\Http\Controllers\API\SmsNotificationController');
 
@@ -135,8 +139,13 @@ Route::group(['middleware' => ['api', 'auth:api', 'localization']], function () 
     // City
     Route::get('city/search/{data}', 'App\Http\Controllers\API\CityController@search')->name('city.search');
     Route::get('city/search_with_province/{province_name}/{data}', 'App\Http\Controllers\API\CityController@searchWithProvince')->name('city.search_with_province');
+    // Area
+    Route::get('area/search/{data}', 'App\Http\Controllers\API\AreaController@search')->name('area.search');
+    Route::get('area/search_with_city/{city_name}/{data}', 'App\Http\Controllers\API\AreaController@searchWithCity')->name('area.search_with_city');
+    // Neighborhood
+    Route::get('neighborhood/search/{data}', 'App\Http\Controllers\API\NeighborhoodController@search')->name('neighborhood.search');
+    Route::get('neighborhood/search_with_area_and_city/{area_name}/{city_name}/{data}', 'App\Http\Controllers\API\NeighborhoodController@searchWithAreaAndCity')->name('neighborhood.search_with_area_and_city');
     // Address
-    Route::get('address/search/{data}', 'App\Http\Controllers\API\AddressController@search')->name('address.search');
     Route::put('address/mark_as_main/{id}/{entity}/{entity_id}', 'App\Http\Controllers\API\AddressController@markAsMain')->name('address.mark_as_main');
     Route::put('address/mark_as_secondary/{id}', 'App\Http\Controllers\API\AddressController@markAsSecondary')->name('address.mark_as_secondary');
     // Phone
@@ -157,7 +166,6 @@ Route::group(['middleware' => ['api', 'auth:api', 'localization']], function () 
     Route::put('user/withdraw_roles/{id}', 'App\Http\Controllers\API\UserController@withdrawRoles')->name('user.withdraw_roles');
     Route::put('user/update_prefered_role/{id}/{role_id}', 'App\Http\Controllers\API\UserController@updatePreferedRole')->name('user.update_prefered_role');
     Route::put('user/update_password/{id}', 'App\Http\Controllers\API\UserController@updatePassword')->name('user.update_password');
-    Route::put('user/update_api_token/{id}', 'App\Http\Controllers\API\UserController@updateApiToken')->name('user.update_api_token');
     Route::put('user/update_avatar_picture/{id}', 'App\Http\Controllers\API\UserController@updateAvatarPicture')->name('user.update_avatar_picture');
     // Company
     Route::get('company/search/{visitor_user_id}/{data}', 'App\Http\Controllers\API\CompanyController@search')->name('company.search');
@@ -168,38 +176,35 @@ Route::group(['middleware' => ['api', 'auth:api', 'localization']], function () 
     Route::put('company/update_user_role/{id}/{user_id}', 'App\Http\Controllers\API\CompanyController@updateUserRole')->name('company.update_user_role');
     Route::put('company/update_logo_picture/{id}', 'App\Http\Controllers\API\CompanyController@updateLogoPicture')->name('company.update_logo_picture');
     // Cart
+    Route::put('cart/update_payment_code/{id}', 'App\Http\Controllers\API\CartController@updatePaymentCode')->name('cart.update_payment_code');
     Route::put('cart/add_prepaid_cards/{id}', 'App\Http\Controllers\API\CartController@addPrepaidCards')->name('cart.add_prepaid_cards');
     Route::put('cart/withdraw_prepaid_cards/{id}', 'App\Http\Controllers\API\CartController@withdrawPrepaidCards')->name('cart.withdraw_prepaid_cards');
+    Route::put('cart/upload_doc/{id}', 'App\Http\Controllers\API\CartController@uploadDoc')->name('cart.upload_doc');
     // Invoice
     Route::put('invoice/publish/{id}', 'App\Http\Controllers\API\InvoiceController@publish')->name('invoice.publish');
     Route::put('invoice/check_tolerated_delay/{id}', 'App\Http\Controllers\API\InvoiceController@checkToleratedDelay')->name('invoice.check_tolerated_delay');
-    Route::put('invoice/associate_tenders/{id}', 'App\Http\Controllers\API\InvoiceController@associateTenders')->name('invoice.associate_tenders');
-    Route::put('invoice/withdraw_tenders/{id}', 'App\Http\Controllers\API\InvoiceController@withdrawTenders')->name('invoice.withdraw_tenders');
+    // PrepaidCard
+    Route::put('prepaid_card/publish/{id}', 'App\Http\Controllers\API\PrepaidCardController@publish')->name('prepaid_card.publish');
     // Message
     Route::get('message/search/{data}', 'App\Http\Controllers\API\MessageController@search')->name('message.search');
-    Route::get('message/inbox/{entity}/{entity_id}', 'App\Http\Controllers\API\MessageController@inbox')->name('message.inbox');
-    Route::get('message/unread_inbox/{entity}/{entity_id}', 'App\Http\Controllers\API\MessageController@unreadInbox')->name('message.unread_inbox');
-    Route::get('message/spams/{entity}/{entity_id}', 'App\Http\Controllers\API\MessageController@spams')->name('message.spams');
-    Route::get('message/outbox/{entity}/{entity_id}', 'App\Http\Controllers\API\MessageController@outbox')->name('message.outbox');
-    Route::get('message/drafts/{entity}/{entity_id}', 'App\Http\Controllers\API\MessageController@drafts')->name('message.drafts');
+    Route::get('message/inbox/{entity}', 'App\Http\Controllers\API\MessageController@inbox')->name('message.inbox');
+    Route::get('message/unread_inbox/{entity}', 'App\Http\Controllers\API\MessageController@unreadInbox')->name('message.unread_inbox');
+    Route::get('message/spams/{entity}', 'App\Http\Controllers\API\MessageController@spams')->name('message.spams');
+    Route::get('message/outbox/{user_id}', 'App\Http\Controllers\API\MessageController@outbox')->name('message.outbox');
+    Route::get('message/drafts/{user_id}', 'App\Http\Controllers\API\MessageController@drafts')->name('message.drafts');
     Route::get('message/answers/{message_id}', 'App\Http\Controllers\API\MessageController@answers')->name('message.answers');
-    Route::put('message/switch_status/{id}/{entity}/{entity_id}/{status_name}', 'App\Http\Controllers\API\MessageController@switchStatus')->name('message.switch_status');
-    Route::put('message/mark_all_read/{entity}/{entity_id}', 'App\Http\Controllers\API\MessageController@markAllRead')->name('message.mark_all_read');
+    Route::put('message/switch_status/{id}/{user_id}/{status_name}', 'App\Http\Controllers\API\MessageController@switchStatus')->name('message.switch_status');
+    Route::put('message/mark_all_read/{entity}', 'App\Http\Controllers\API\MessageController@markAllRead')->name('message.mark_all_read');
     Route::put('message/upload_doc/{id}', 'App\Http\Controllers\API\MessageController@uploadDoc')->name('message.upload_doc');
     Route::put('message/upload_audio/{id}', 'App\Http\Controllers\API\MessageController@uploadAudio')->name('message.upload_audio');
     Route::put('message/update_video/{id}', 'App\Http\Controllers\API\MessageController@updateVideo')->name('message.update_video');
     Route::put('message/update_picture/{id}', 'App\Http\Controllers\API\MessageController@updatePicture')->name('message.update_picture');
     // Notification
-    Route::get('notification/select_by_entity/{entity}/{id}', 'App\Http\Controllers\API\NotificationController@selectByEntity')->name('notification.select_by_entity');
-    Route::get('notification/select_by_entity_with_status/{entity}/{id}/{status_id}', 'App\Http\Controllers\API\NotificationController@selectByEntityWithStatus')->name('notification.select_by_entity_with_status');
+    Route::get('notification/select_by_user/{user_id}', 'App\Http\Controllers\API\NotificationController@selectByUser')->name('notification.select_by_user');
+    Route::get('notification/select_unread_by_user/{user_id}', 'App\Http\Controllers\API\NotificationController@selectUnreadByUser')->name('notification.select_unread_by_user');
+    Route::get('notification/switch_status/{id}', 'App\Http\Controllers\API\NotificationController@switchStatus')->name('notification.switch_status');
     // History
-    Route::get('history/select_by_entity/{entity}/{id}', 'App\Http\Controllers\API\HistoryController@selectByEntity')->name('history.select_by_entity');
-    Route::get('history/select_by_entity_with_type/{entity}/{id}/{type_id}', 'App\Http\Controllers\API\HistoryController@selectByEntityWithType')->name('history.select_by_entity_with_type');
-    // Preference
-    Route::get('preference/select_by_entity/{entity}/{id}', 'App\Http\Controllers\API\PreferenceController@selectByEntity')->name('preference.select_by_entity');
-    Route::put('preference/switch_theme/{id}/{data}', 'App\Http\Controllers\API\PreferenceController@switchTheme')->name('preference.switch_theme');
-    Route::put('preference/associate_keywords/{id}', 'App\Http\Controllers\API\PreferenceController@associateKeywords')->name('preference.associate_keywords');
-    Route::put('preference/withdraw_keywords/{id}', 'App\Http\Controllers\API\PreferenceController@withdrawKeywords')->name('preference.withdraw_keywords');
+    Route::get('history/select_by_type/{user_id}/{type_id}', 'App\Http\Controllers\API\HistoryController@selectByType')->name('history.select_by_type');
     // EmailNotification
     Route::put('email_notification/switch_activation/{id}/{data}', 'App\Http\Controllers\API\EmailNotificationController@switchActivation')->name('email_notification.switch_activation');
     // SmsNotification

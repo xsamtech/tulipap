@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/language/{locale}', [HomeController::class, 'changeLanguage'])->name('change_language');
-Route::get('/search/{data}', [HomeController::class, 'search'])->name('home.search');
 // Account
 Route::get('/account', [AccountController::class, 'account'])->name('account');
 Route::get('/account/update_password', [AccountController::class, 'editPassword'])->name('account.update.password');
@@ -41,30 +40,51 @@ Route::get('/message/search/{data}', [MessageController::class, 'search'])->name
 Route::get('/message/delete/{id}', [MessageController::class, 'deleteMessage'])->name('message.delete');
 Route::post('/message/create', [MessageController::class, 'storeMessage'])->name('message.create');
 Route::post('/message/{id}', [MessageController::class, 'updateMessage'])->whereNumber('id')->name('message.datas');
-// About
-Route::get('/about', [AboutController::class, 'index'])->name('about.home');
 
 /*
 |--------------------------------------------------------------------------
-| ROUTES FOR EVERY ROLES EXCEPT "Super administrateur"
+| ROUTES FOR EVERY ROLES EXCEPT "Super administrateur" AND "Développeur"
 |--------------------------------------------------------------------------
 */
 // Notification
-Route::get('/notification', [NotificationController::class, 'index'])->name('notification.home');
-// About
-Route::get('/about/app', [AboutController::class, 'aboutApplication'])->name('about.app');
-Route::get('/about/terms_of_use', [AboutController::class, 'termsOfUse'])->name('about.terms_of_use');
-Route::get('/about/privacy_policy', [AboutController::class, 'privacyPolicy'])->name('about.privacy_policy');
-Route::get('/about/help', [AboutController::class, 'help'])->name('about.help');
-Route::get('/about/faq', [AboutController::class, 'faq'])->name('about.faq');
-Route::get('/about/company', [AboutController::class, 'company'])->name('about.company');
+Route::get('/notification', [HomeController::class, 'notification'])->name('notification.home');
+// About us
+Route::get('/about_us', [HomeController::class, 'aboutUs'])->name('about_us.home');
+Route::get('/about_us/company', [HomeController::class, 'aboutCompany'])->name('about_us.company');
+Route::get('/about_us/app', [HomeController::class, 'aboutApplication'])->name('about_us.app');
+Route::get('/about_us/terms_of_use', [HomeController::class, 'termsOfUse'])->name('about_us.terms_of_use');
+Route::get('/about_us/privacy_policy', [HomeController::class, 'privacyPolicy'])->name('about_us.privacy_policy');
+Route::get('/about_us/help', [HomeController::class, 'help'])->name('about_us.help');
+Route::get('/about_us/faq', [HomeController::class, 'faq'])->name('about_us.faq');
+
+/*
+|--------------------------------------------------------------------------
+| ROUTES FOR "Administrateur" AND "Agent"
+|--------------------------------------------------------------------------
+*/
+// Home
+Route::get('/search/customers/{data}', [HomeController::class, 'searchCustomer'])->name('search.customer');
+
+/*
+|--------------------------------------------------------------------------
+| ROUTES FOR "Agent" AND "Client"
+|--------------------------------------------------------------------------
+*/
+// Home
+Route::get('/invoice', [HomeController::class, 'invoice'])->name('invoice.home');
+Route::get('/invoice/{id}', [HomeController::class, 'invoiceDatas'])->whereNumber('id')->name('invoice.datas');
+Route::get('/provider/{id}', [HomeController::class, 'providerDatas'])->whereNumber('id')->name('provider.datas');
+Route::get('/provider/{provider_id}/prepaid_card', [HomeController::class, 'prepaidCard'])->whereNumber('provider_id')->name('provider.prepaid_card.home');
+Route::get('/provider/{provider_id}/prepaid_card/{id}', [HomeController::class, 'prepaidCardDatas'])->whereNumber(['provider_id', 'id'])->name('provider.prepaid_card.datas');
+Route::get('/post', [HomeController::class, 'post'])->name('post.home');
 
 /*
 |--------------------------------------------------------------------------
 | ROUTES FOR "Super administrateur"
 |--------------------------------------------------------------------------
 */
-// About
+// About// About
+Route::get('/about', [AboutController::class, 'index'])->name('about.home');
 Route::get('/about/{id}', [AboutController::class, 'show'])->whereNumber('id')->name('about.datas');
 Route::get('/about/{entity}', [AboutController::class, 'indexEntity'])->name('about.entity.home');
 Route::get('/about/{entity}/{id}', [AboutController::class, 'showEntity'])->whereNumber('id')->name('about.entity.datas');
@@ -105,28 +125,28 @@ Route::post('/miscellaneous/{entity}/{id}', [MiscellaneousController::class, 'up
 
 /*
 |--------------------------------------------------------------------------
-| ROUTES FOR "Administrateur" AND "Agent"
+| ROUTES FOR "Développeur"
 |--------------------------------------------------------------------------
 */
-// Home
-Route::get('/search/customers/{data}', [HomeController::class, 'searchCustomer'])->name('search.customers');
+// API
+Route::get('/apis', [APIController::class, 'index'])->name('apis.home');
+Route::get('/apis/{entity}', [APIController::class, 'apisEntity'])->name('apis.entity');
 
 /*
 |--------------------------------------------------------------------------
 | ROUTES FOR "Administrateur"
 |--------------------------------------------------------------------------
 */
-// Home
-Route::get('/search/{data}', [HomeController::class, 'search'])->name('search.company');
-Route::get('/search/administrators/{data}', [HomeController::class, 'searchAdmin'])->name('search.admins');
-Route::get('/search/agents/{data}', [HomeController::class, 'searchAgent'])->name('search.agents');
 // Company
 Route::get('/company', [CompanyController::class, 'index'])->name('company.home');
-Route::get('/company/rate', [CompanyController::class, 'rate'])->name('company.rate');
+Route::get('/company/pricing', [CompanyController::class, 'pricing'])->name('company.pricing');
 Route::get('/company/office', [CompanyController::class, 'office'])->name('company.office');
 Route::get('/company/agent', [CompanyController::class, 'agent'])->name('company.agent');
+Route::get('/company/search/administrators/{data}', [CompanyController::class, 'searchAdmin'])->name('search.admin');
+Route::get('/company/search/agents/{data}', [CompanyController::class, 'searchAgent'])->name('search.agent');
 Route::get('/company/agent/{id}', [CompanyController::class, 'agentDatas'])->whereNumber('id')->name('company.agent.datas');
 Route::get('/company/invoice', [CompanyController::class, 'invoice'])->name('company.invoice');
+Route::get('/company/invoice/{id}', [CompanyController::class, 'invoiceDatas'])->whereNumber('id')->name('company.invoice.datas');
 Route::get('/company/customer', [CompanyController::class, 'customer'])->name('company.customer');
 Route::get('/company/customer/new', [CompanyController::class, 'newCustomer'])->name('company.customer.new');
 Route::get('/company/customer/{id}', [CompanyController::class, 'customerDatas'])->whereNumber('id')->name('company.customer.datas');
@@ -154,9 +174,10 @@ Route::get('/communique/{id}', [OfficeController::class, 'communiqueDatas'])->wh
 |--------------------------------------------------------------------------
 */
 // Home
-Route::get('/post', [HomeController::class, 'post'])->name('post.home');
-Route::get('/invoice', [HomeController::class, 'invoice'])->name('invoice.home');
-Route::get('/invoice/{id}', [HomeController::class, 'invoiceData'])->whereNumber('id')->name('invoices.datas');
-Route::get('/prepaid_card', [HomeController::class, 'prepaidCard'])->name('prepaid_card.home');
+Route::get('/cart', [HomeController::class, 'cart'])->name('cart.home');
+Route::get('/cart/receipt', [HomeController::class, 'receipt'])->name('cart.receipt.home');
+Route::get('/cart/receipt/{cart_id}', [HomeController::class, 'receiptDatas'])->whereNumber('cart_id')->name('cart.receipt.datas');
+Route::get('/provider', [HomeController::class, 'provider'])->name('provider.home');
+Route::get('/search/providers/{data}', [HomeController::class, 'searchProvider'])->name('search.provider');
 
 require __DIR__ . '/auth.php';

@@ -5,7 +5,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Group;
 use App\Models\Notification;
+use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Notification as ResourcesNotification;
@@ -32,29 +34,21 @@ class NotificationController extends BaseController
      */
     public function store(Request $request)
     {
+        $notification_group = Group::where('group_name', 'Notification')->first();
+        $unread_status = Status::where([['status_name', 'Non lue'], ['group_id', $notification_group->id]])->first();
         // Get inputs
         $inputs = [
             'notification_url' => $request->notification_url,
             'notification_content' => $request->notification_content,
-            'user_id' => $request->user_id,
-            'seller_id' => $request->seller_id,
-            'third_party_app_id' => $request->third_party_app_id,
-            'status_id' => $request->status_id
+            'status_id' => $unread_status->id,
+            'user_id' => $request->user_id
         ];
-
-        // Validate required fields
-        if ($inputs['user_id'] == null AND $inputs['seller_id'] == null AND $inputs['third_party_app_id'] == null) {
-            return $this->handleError(__('validation.custom.user_or_seller_or_third_party_app.required'), 400);
-        }
-
-        if ($inputs['user_id'] == ' ' AND $inputs['seller_id'] == ' ' AND $inputs['third_party_app_id'] == ' ') {
-            return $this->handleError(__('validation.custom.user_or_seller_or_third_party_app.required'), 400);
-        }
 
         $validator = Validator::make($inputs, [
             'notification_url' => ['required'],
             'notification_content' => ['required'],
-            'status_id' => ['required']
+            'status_id' => ['required'],
+            'user_id' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -97,25 +91,16 @@ class NotificationController extends BaseController
             'id' => $request->id,
             'notification_url' => $request->notification_url,
             'notification_content' => $request->notification_content,
-            'user_id' => $request->user_id,
-            'seller_id' => $request->seller_id,
-            'third_party_app_id' => $request->third_party_app_id,
             'status_id' => $request->status_id,
+            'user_id' => $request->user_id,
             'updated_at' => now()
         ];
-
-        if ($inputs['user_id'] == null AND $inputs['seller_id'] == null AND $inputs['third_party_app_id'] == null) {
-            return $this->handleError(__('validation.custom.user_or_seller_or_third_party_app.required'), 400);
-        }
-
-        if ($inputs['user_id'] == ' ' AND $inputs['seller_id'] == ' ' AND $inputs['third_party_app_id'] == ' ') {
-            return $this->handleError(__('validation.custom.user_or_seller_or_third_party_app.required'), 400);
-        }
 
         $validator = Validator::make($inputs, [
             'notification_url' => ['required'],
             'notification_content' => ['required'],
-            'status_id' => ['required']
+            'status_id' => ['required'],
+            'user_id' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -144,31 +129,61 @@ class NotificationController extends BaseController
 
     // ==================================== CUSTOM METHODS ====================================
     /**
-     * Select all notifications given for a specific entity.
+     * Select all user notifications.
      *
-     * @param  $entity
-     * @param  $id
+     * @param  $user_id
      * @return \Illuminate\Http\Response
      */
-    public function selectByEntity($entity, $id)
+    public function selectByUser($user_id)
     {
-        $notifications = Notification::where($entity . '_id', $id)->get();
+        $notifications = Notification::where('user_id', $user_id)->get();
 
         return $this->handleResponse(ResourcesNotification::collection($notifications), __('notifications.find_all_notifications_success'));
     }
 
     /**
-     * Select all notifications with a specific status given for a specific entity.
+     * Select all user unread notifications.
      *
-     * @param  $entity
-     * @param  $id
+     * @param  $user_id
      * @param  $status_id
      * @return \Illuminate\Http\Response
      */
-    public function selectByEntityWithStatus($entity, $id, $status_id)
+    public function selectUnreadByUser($user_id)
     {
-        $notifications = Notification::where($entity . '_id', $id)->where('status_id', $status_id)->get();
+        $notification_group = Group::where('group_name', 'Notification')->first();
+        $unread_status = Status::where([['status_name', 'Non lue'], ['group_id', $notification_group->id]])->first();
+        $notifications = Notification::where([['user_id', $user_id], ['status_id', $unread_status->id]])->get();
 
         return $this->handleResponse(ResourcesNotification::collection($notifications), __('notifications.find_all_notifications_success'));
+    }
+
+    /**
+     * Switch between message statuses.
+     *
+     * @param  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function switchStatus($id)
+    {
+        $notification_group = Group::where('group_name', 'Notification')->first();
+        $unread_status = Status::where([['status_name', 'Non lue'], ['group_id', $notification_group->id]])->first();
+        $read_status = Status::where([['status_name', 'Lue'], ['group_id', $notification_group->id]])->first();
+        $notification = Notification::find($id);
+
+        // update "status_id" column
+        if ($notification->status_id == $unread_status->id) {
+            $notification->update([
+                'status_id' => $read_status->id,
+                'updated_at' => now()
+            ]);
+
+        } else {
+            $notification->update([
+                'status_id' => $unread_status->id,
+                'updated_at' => now()
+            ]);
+        }
+
+        return $this->handleResponse(new ResourcesNotification($notification), __('notifications.find_notification_success'));
     }
 }

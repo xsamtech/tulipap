@@ -1,4 +1,7 @@
 <?php
+/**
+ * Copyright (c) 2023 Xsam Technologies and/or its affiliates. All rights reserved.
+ */
 
 namespace App\Http\Controllers\Auth;
 
