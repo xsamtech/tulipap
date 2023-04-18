@@ -14,10 +14,10 @@ use GuzzleHttp\Exception\ClientException;
 
 class HomeController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth')->except(['changeLanguage', 'index', 'aboutUs', 'help']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth')->except(['changeLanguage', 'index', 'aboutUs', 'help']);
+    // }
 
     // ==================================== HTTP GET METHODS ====================================
     /**
