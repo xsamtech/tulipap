@@ -576,5 +576,12 @@ return [
         'help' => [
             'title' => 'Help center',
         ],
+        'invoice' => [
+            'title' => 'My invoices',
+        ],
+        'prepaid_card' => [
+            'title1' => 'Providers list',
+            'title2' => 'Choose virtual cards to buy',
+        ],
     ],
 ];

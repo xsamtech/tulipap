@@ -576,5 +576,12 @@ return [
         'help' => [
             'title' => 'Centre d\'aide',
         ],
+        'invoice' => [
+            'title' => 'Mes factures',
+        ],
+        'prepaid_card' => [
+            'title1' => 'Liste des fournisseurs',
+            'title2' => 'Choisissez des cartes virtuelles à acheter',
+        ],
     ],
 ];

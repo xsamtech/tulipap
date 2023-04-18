@@ -1,9 +1,13 @@
 <?php
+/**
+ * Copyright (c) 2023 Xsam Technologies and/or its affiliates. All rights reserved.
+ */
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -38,13 +42,25 @@ class Handler extends ExceptionHandler
 
     /**
      * Register the exception handling callbacks for the application.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Display a JSON message if the API user has not authenticated
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        $is_api_request = $request->route()->getPrefix() == 'api';
+
+        if ($is_api_request == false) {
+            return response()->view('auth.login');
+        }
+
+        return response()->json(['error' => __('notifications.401_description')], 401);
     }
 }
