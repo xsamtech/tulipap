@@ -145,9 +145,9 @@ class ProvinceController extends BaseController
      */
     public function search($data)
     {
-        $provinces = Province::search($data)->get();
+        $province = Province::where('province_name', $data)->first();
 
-        return $this->handleResponse(ResourcesProvince::collection($provinces), __('notifications.find_all_provinces_success'));
+        return $this->handleResponse(new ResourcesProvince($province), __('notifications.find_province_success'));
     }
 
     /**
@@ -159,8 +159,13 @@ class ProvinceController extends BaseController
      */
     public function searchWithCountry($country_name, $data)
     {
-        $group = Country::where('country_name', 'like', '%' . $country_name . '%')->first();
-        $province = Province::where([['city_name', 'like', '%' . $data . '%'], ['group_id', $group->id]])->first();
+        $country = Country::where('country_name', $country_name)->first();
+
+        if (is_null($country)) {
+            return $this->handleResponse(null, __('notifications.find_country_404'));
+        }
+
+        $province = Province::where([['province_name', $data], ['country_id', $country->id]])->first();
 
         return $this->handleResponse(new ResourcesProvince($province), __('notifications.find_province_success'));
     }

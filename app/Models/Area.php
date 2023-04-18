@@ -7,13 +7,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
+// use Laravel\Scout\Searchable;
 
 class Area extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory/*, Searchable*/;
 
-    const SEARCHABLE_FIELDS = ['area_name'];
+    // const SEARCHABLE_FIELDS = ['area_name'];
 
     protected $fillable = ['area_name', 'updated_at', 'city_id'];
 
@@ -22,10 +22,10 @@ class Area extends Model
      *
      * @return array
      */
-    public function toSearchableArray()
-    {
-        return $this->only(self::SEARCHABLE_FIELDS);
-    }
+    // public function toSearchableArray()
+    // {
+    //     return $this->only(self::SEARCHABLE_FIELDS);
+    // }
 
     /**
      * ONE-TO-MANY

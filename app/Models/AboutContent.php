@@ -7,13 +7,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
+// use Laravel\Scout\Searchable;
 
 class AboutContent extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory/*, Searchable*/;
 
-    const SEARCHABLE_FIELDS = ['subtitle'];
+    // const SEARCHABLE_FIELDS = ['subtitle'];
 
     protected $fillable = ['subtitle', 'content', 'updated_at', 'about_title_id'];
 
@@ -22,10 +22,10 @@ class AboutContent extends Model
      *
      * @return array
      */
-    public function toSearchableArray()
-    {
-        return $this->only(self::SEARCHABLE_FIELDS);
-    }
+    // public function toSearchableArray()
+    // {
+    //     return $this->only(self::SEARCHABLE_FIELDS);
+    // }
 
     /**
      * ONE-TO-MANY

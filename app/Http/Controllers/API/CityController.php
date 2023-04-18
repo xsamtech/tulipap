@@ -145,7 +145,7 @@ class CityController extends BaseController
      */
     public function search($data)
     {
-        $cities = City::search($data)->get();
+        $cities = City::where('city_name', $data)->first();
 
         return $this->handleResponse(ResourcesCity::collection($cities), __('notifications.find_all_cities_success'));
     }
@@ -159,8 +159,13 @@ class CityController extends BaseController
      */
     public function searchWithProvince($province_name, $data)
     {
-        $province = Province::where('province_name', 'like', '%' . $province_name . '%')->first();
-        $city = City::where([['city_name', 'like', '%' . $data . '%'], ['province_id', $province->id]])->first();
+        $province = Province::where('province_name', $province_name)->first();
+
+        if (is_null($province)) {
+            return $this->handleResponse(null, __('notifications.find_province_404'));
+        }
+
+        $city = City::where([['city_name', $data], ['province_id', $province->id]])->first();
 
         return $this->handleResponse(new ResourcesCity($city), __('notifications.find_city_success'));
     }

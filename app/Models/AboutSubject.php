@@ -7,13 +7,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Scout\Searchable;
+// use Laravel\Scout\Searchable;
 
 class AboutSubject extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory/*, Searchable*/;
 
-    const SEARCHABLE_FIELDS = ['subject'];
+    // const SEARCHABLE_FIELDS = ['subject'];
 
     protected $fillable = ['subject', 'subject_description', 'updated_at', 'status_id'];
 
@@ -22,10 +22,10 @@ class AboutSubject extends Model
      *
      * @return array
      */
-    public function toSearchableArray()
-    {
-        return $this->only(self::SEARCHABLE_FIELDS);
-    }
+    // public function toSearchableArray()
+    // {
+    //     return $this->only(self::SEARCHABLE_FIELDS);
+    // }
 
     /**
      * ONE-TO-MANY

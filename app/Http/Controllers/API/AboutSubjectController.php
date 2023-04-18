@@ -119,16 +119,16 @@ class AboutSubjectController extends BaseController
 
     // ==================================== CUSTOM METHODS ====================================
     /**
-     * Search a subject about the app operation by its name.
+     * Search a subject by its name.
      *
      * @param  string $data
      * @return \Illuminate\Http\Response
      */
     public function search($data)
     {
-        $about_subjects = AboutSubject::search($data)->get();
+        $about_subject = AboutSubject::where('subject', $data)->first();
 
-        return $this->handleResponse(ResourcesAboutSubject::collection($about_subjects), __('notifications.find_all_about_subjects_success'));
+        return $this->handleResponse(new ResourcesAboutSubject($about_subject), __('notifications.find_about_subject_success'));
     }
 
     /**

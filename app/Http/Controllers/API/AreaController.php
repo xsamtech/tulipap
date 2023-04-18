@@ -144,7 +144,7 @@ class AreaController extends BaseController
      */
     public function search($data)
     {
-        $areas = Area::search($data)->get();
+        $areas = Area::where('area_name', $data)->get();
 
         return $this->handleResponse(ResourcesArea::collection($areas), __('notifications.find_all_areas_success'));
     }
@@ -158,8 +158,13 @@ class AreaController extends BaseController
      */
     public function searchWithCity($city_name, $data)
     {
-        $city = City::where('city_name', 'like', '%' . $city_name . '%')->first();
-        $area = Area::where([['area_name', 'like', '%' . $data . '%'], ['city_id', $city->id]])->first();
+        $city = City::where('city_name', $city_name)->first();
+
+        if (is_null($city)) {
+            return $this->handleResponse(null, __('notifications.find_city_404'));
+        }
+
+        $area = Area::where([['area_name', $data], ['city_id', $city->id]])->first();
 
         return $this->handleResponse(new ResourcesArea($area), __('notifications.find_area_success'));
     }

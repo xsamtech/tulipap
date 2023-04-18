@@ -143,8 +143,8 @@ class AboutTitleController extends BaseController
      */
     public function search($data)
     {
-        $about_titles = AboutTitle::search($data)->get();
+        $about_title = AboutTitle::where('title', $data)->first();
 
-        return $this->handleResponse(ResourcesAboutTitle::collection($about_titles), __('notifications.find_all_about_titles_success'));
+        return $this->handleResponse(new ResourcesAboutTitle($about_title), __('notifications.find_about_title_success'));
     }
 }
