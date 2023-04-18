@@ -106,4 +106,14 @@ class HomeController extends Controller
     {
         return view('help');
     }
+
+    /**
+     * Display the Invoices list page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function invoice()
+    {
+        return view('inner_page.customer.invoice');
+    }
 }
