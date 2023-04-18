@@ -38,31 +38,39 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.custom.css') }}">
 
         <title>
-@if (Route::current()->getName() == 'home')
+@if (Route::is('home'))
             @lang('miscellaneous.customer.home.title')
 @endif
 
-@if (Route::current()->getName() == 'about_us.home')
+@if (Route::is('about_us.home'))
             @lang('miscellaneous.customer.about_us.title')
 @endif
 
-@if (Route::current()->getName() == 'about_us.help')
+@if (Route::is('about_us.home'))
+            @lang('miscellaneous.customer.about_us.title')
+@endif
+
+@if (Route::is('about_us.help'))
             @lang('miscellaneous.customer.help.title')
+@endif
+
+@if (Route::is('invoice.home'))
+            @lang('miscellaneous.customer.invoice.title')
 @endif
         </title>
     </head>
 
     <body>
         <!-- ======= Header ======= -->
-        <header id="header" class="fixed-top {{ Route::current()->getName() != 'home' ? 'header-inner-pages' : '' }}">
+        <header id="header" class="fixed-top {{ Route::is('home')  ? '' : 'header-inner-pages' }}">
             <div class="container d-flex align-items-center">
                 <a href="{{ route('home') }}" class="logo me-auto"><img src="{{ asset('assets/img/logo/logo_text_01_1.png') }}" alt="" width="150"></a>
 
                 <nav id="navbar" class="navbar shadow-0">
                     <ul>
-                        <li><a class="nav-link scrollto {{ Route::current()->getName() == 'home' ? 'active' : '' }}" href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
-                        <li><a class="nav-link scrollto {{ Route::current()->getName() == 'about_us.home' ? 'active' : '' }}" href="{{ route('about_us.home') }}">@lang('miscellaneous.menu.customer.about')</a></li>
-                        <li><a class="nav-link scrollto {{ Route::current()->getName() == 'about_us.help' ? 'active' : '' }}" href="{{ route('about_us.help') }}">@lang('miscellaneous.menu.customer.help')</a></li>
+                        <li><a class="nav-link scrollto {{ Route::is('home') ? 'active' : '' }}" href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
+                        <li><a class="nav-link scrollto {{ Route::is('about_us.home') ? 'active' : '' }}" href="{{ route('about_us.home') }}">@lang('miscellaneous.menu.customer.about')</a></li>
+                        <li><a class="nav-link scrollto {{ Route::is('about_us.help') ? 'active' : '' }}" href="{{ route('about_us.help') }}">@lang('miscellaneous.menu.customer.help')</a></li>
                         <li class="dropdown dropend">
                             <a role="button" id="dropdownLanguage" class="dropdown-toggle hidden-arrow" href="#">
                                 <i class="bi bi-translate fs-5"></i>
@@ -98,7 +106,7 @@
         </header>
         <!-- ======= End Header ======= -->
 
-@if (Route::current()->getName() == 'home')
+@if (Route::is('home'))
         <!-- ======= Hero Section ======= -->
         <section id="hero" class="d-flex align-items-center">
             <div class="container">
@@ -131,18 +139,18 @@
             <!-- ======= Breadcrumbs ======= -->
             <section id="breadcrumbs" class="breadcrumbs">
                 <div class="container">
-    @if (Route::current()->getName() == 'about_us.home')
+    @if (Route::is('about_us.home'))
 
                     <ol>
                         <li><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
                         <li>@lang('miscellaneous.menu.customer.about')</li>
                     </ol>
 
-                    <h2>A propos de nous</h2>
+                    <h2>@lang('miscellaneous.customer.about_us.title')</h2>
 
     @endif
 
-    @if (Route::current()->getName() == 'about_us.help')
+    @if (Route::is('about_us.help'))
 
                     <ol>
                         <li><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
@@ -150,7 +158,18 @@
                         <li>@lang('miscellaneous.menu.customer.help')</li>
                     </ol>
 
-                    <h2>Centre d'aide</h2>
+                    <h2>@lang('miscellaneous.customer.about_us.title')</h2>
+
+    @endif
+
+    @if (Route::is('invoice.home'))
+
+                    <ol>
+                        <li><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
+                        <li>@lang('miscellaneous.menu.customer.invoice')</li>
+                    </ol>
+
+                    <h2>@lang('miscellaneous.customer.invoice.title')</h2>
 
     @endif
                 </div>
