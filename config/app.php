@@ -209,7 +209,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         // Service Provider QRCode
-        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        // SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
 
     ],
 
@@ -227,7 +227,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         // Façade Simple-qrcode
-        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        // 'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ])->toArray(),
 
 ];
