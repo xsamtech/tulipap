@@ -252,7 +252,7 @@
                                     <hr>
 
                                     <p class="small text-center">
-                                        &copy; Copyright {{ date('Y') }} <span class="d-inline-block mx-1"><a href="https://xsam-tech.dev:1443/">Xsam Technologies</a>.</span> <br>@lang('miscellaneous.all_right_reserved').
+                                        &copy; Copyright {{ date('Y') }} <span class="d-inline-block mx-1"><a href="https://xsamtech.com/">Xsam Technologies</a>.</span> <br>@lang('miscellaneous.all_right_reserved').
                                     </p>
                                 </div>
                             </div>

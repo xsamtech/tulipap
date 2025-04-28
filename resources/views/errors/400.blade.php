@@ -1,4 +1,4 @@
-@extends('layouts.customer', ['page_title' => __('miscellaneous.customer.help.title')])
+@extends('layouts.customer')
 
 @section('customer-content')
 

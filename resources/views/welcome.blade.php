@@ -1,4 +1,4 @@
-@extends('layouts.customer')
+@extends('layouts.customer', ['page_title' => __('miscellaneous.customer.home.title')])
 
 @section('customer-content')
 
@@ -155,8 +155,8 @@
                         </div>
 
                         <div class="col-lg-6 cta-btn-container text-center d-sm-flex justify-content-center d-inline-block">
-                            <a class="cta-btn align-middle" href="https://xsam-tech.dev:1443/partnership">@lang('miscellaneous.customer.home.partnership.link1')</a>
-                            <a class="cta-btn align-middle" href="https://xsam-tech.dev:1443/project/tulipap/sponsorship">@lang('miscellaneous.customer.home.partnership.link2')</a>
+                            <a class="cta-btn align-middle" href="https://xsamtech.com/partnership">@lang('miscellaneous.customer.home.partnership.link1')</a>
+                            <a class="cta-btn align-middle" href="https://xsamtech.com/products/tulipap/sponsorship">@lang('miscellaneous.customer.home.partnership.link2')</a>
                         </div>
                     </div>
                 </div>

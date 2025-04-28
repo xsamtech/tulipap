@@ -38,24 +38,14 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.custom.css') }}">
 
         <title>
-@if (Route::is('home'))
-            @lang('miscellaneous.customer.home.title')
-@endif
-
-@if (Route::is('about_us.home'))
-            @lang('miscellaneous.customer.about_us.title')
-@endif
-
-@if (Route::is('about_us.home'))
-            @lang('miscellaneous.customer.about_us.title')
-@endif
-
-@if (Route::is('about_us.help'))
-            @lang('miscellaneous.customer.help.title')
-@endif
-
-@if (Route::is('invoice.home'))
-            @lang('miscellaneous.customer.invoice.title')
+@if (!empty($exception))
+            {{ $exception->getStatusCode() . ' - ' . __('notifications.' . $exception->getStatusCode() . '_title') }}
+@else
+    @if ($page_title)
+            {{ $page_title }}
+    @else
+            Tulipap
+    @endif
 @endif
         </title>
     </head>
@@ -139,7 +129,17 @@
             <!-- ======= Breadcrumbs ======= -->
             <section id="breadcrumbs" class="breadcrumbs">
                 <div class="container">
-    @if (Route::is('about_us.home'))
+    @if (!empty($exception))
+
+                <ol>
+                    <li><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
+                    <li>{{ $exception->getStatusCode() }}</li>
+                </ol>
+
+                <h2>{{ __('notifications.' . $exception->getStatusCode() . '_title') }}</h2>
+
+    @else
+        @if (Route::is('about_us.home'))
 
                     <ol>
                         <li><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
@@ -148,9 +148,9 @@
 
                     <h2>@lang('miscellaneous.customer.about_us.title')</h2>
 
-    @endif
+        @endif
 
-    @if (Route::is('about_us.help'))
+        @if (Route::is('about_us.help'))
 
                     <ol>
                         <li><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
@@ -160,9 +160,9 @@
 
                     <h2>@lang('miscellaneous.customer.about_us.title')</h2>
 
-    @endif
+        @endif
 
-    @if (Route::is('invoice.home'))
+        @if (Route::is('invoice.home'))
 
                     <ol>
                         <li><a href="{{ route('home') }}">@lang('miscellaneous.menu.home')</a></li>
@@ -171,6 +171,7 @@
 
                     <h2>@lang('miscellaneous.customer.invoice.title')</h2>
 
+        @endif
     @endif
                 </div>
             </section>
@@ -247,7 +248,7 @@
 
             <div class="container footer-bottom d-flex justify-content-center">
                 <div class="copyright">
-                    &copy; Copyright {{ date('Y') }} <span class="d-inline-block mx-1"><a href="https://xsam-tech.dev:1443/">Xsam Technologies</a>.</span> <br class="d-sm-none d-block">@lang('miscellaneous.all_right_reserved').
+                    &copy; Copyright {{ date('Y') }} <span class="d-inline-block mx-1"><a href="https://xsamtech.com/">Xsam Technologies</a>.</span> <br class="d-sm-none d-block">@lang('miscellaneous.all_right_reserved').
                 </div>
             </div>
         </footer>
